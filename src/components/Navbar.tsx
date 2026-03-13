@@ -20,7 +20,7 @@ const Navbar = () => {
   const location = useLocation();
 
   return (
-    <nav className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+    <nav className="absolute top-0 left-0 right-0 z-50 bg-transparent">
       <div className="container flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center gap-0 font-bold text-xl">
           <img src={logo} alt="Aram Xerox Logo" className="h-20 w-25 object-cover rounded-full mt-2.5" />
@@ -33,8 +33,8 @@ const Navbar = () => {
             <Link
               key={l.path}
               to={l.path}
-              className={`px-3 py-2 rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-primary ${
-                location.pathname === l.path ? "bg-accent text-primary font-semibold" : "text-muted-foreground"
+              className={`px-3 py-2 rounded-md text-sm font-medium transition-colors hover:bg-white/20 ${
+                location.pathname === l.path ? "bg-white/20 text-white font-semibold" : "text-white/80"
               }`}
             >
               {l.label}
@@ -50,15 +50,15 @@ const Navbar = () => {
 
       {/* Mobile menu */}
       {open && (
-        <div className="lg:hidden border-t bg-background animate-fade-up">
+        <div className="lg:hidden border-t border-white/20 bg-black/70 backdrop-blur-sm animate-fade-up">
           <div className="container py-4 flex flex-col gap-1">
             {navLinks.map((l) => (
               <Link
                 key={l.path}
                 to={l.path}
                 onClick={() => setOpen(false)}
-                className={`px-4 py-3 rounded-md text-sm font-medium transition-colors hover:bg-accent ${
-                  location.pathname === l.path ? "bg-accent text-primary" : "text-muted-foreground"
+                className={`px-4 py-3 rounded-md text-sm font-medium transition-colors hover:bg-white/20 ${
+                  location.pathname === l.path ? "bg-white/20 text-white" : "text-white/80"
                 }`}
               >
                 {l.label}

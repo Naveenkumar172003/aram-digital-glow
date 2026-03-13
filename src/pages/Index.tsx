@@ -5,6 +5,7 @@ import { MapPin, ArrowRight, Copy, Palette, BookOpen, ScanLine, Printer, Monitor
 import SectionTitle from "@/components/SectionTitle";
 import ServiceCard from "@/components/ServiceCard";
 import { branches } from "@/data/branches";
+import heroVideo from "@/assets/back1.mp4";
 
 const branchOverlays = [
   "rgba(0,80,40,0.40)",
@@ -76,47 +77,31 @@ const Index = () => {
   return (
     <div>
       {/* Hero */}
-      <section className="relative h-[85vh] flex items-center overflow-hidden">
-        {/* Slideshow background */}
+      <section className="relative h-screen flex items-center overflow-hidden">
+        {/* Background video */}
         <div className="absolute inset-0">
-          {branches.map((branch, i) => (
-            <div
-              key={branch.slug}
-              className="absolute inset-0 transition-opacity duration-1000"
-              style={{ opacity: i === activeBranch ? 1 : 0 }}
-            >
-              <img src={branch.image} alt={branch.name} className="h-full w-full object-cover" />
-              <div className="absolute inset-0" style={{ background: branchOverlays[i] }} />
-            </div>
-          ))}
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="h-full w-full object-cover"
+          >
+            <source src={heroVideo} type="video/mp4" />
+          </video>
           {/* Dark overlay */}
           <div className="absolute inset-0 bg-black/60" />
         </div>
 
         {/* Content */}
-        <div className="relative z-10 container">
-          <div className="max-w-2xl">
-            {/* Status indicator */}
-            <div className="flex items-center gap-2 mb-4">
-              <span className="h-2 w-2 rounded-full bg-green-400 animate-pulse" />
-              <span className="text-white text-xs font-semibold tracking-[0.15em] uppercase">
-                Serving Tamil Nadu Since 2014
-              </span>
-            </div>
-
-            {/* Headline */}
-            <h1 className="text-4xl md:text-5xl font-extrabold text-white leading-[1.1] mb-5">
-              Your Trusted{" "}
-              <span className="text-cyan-400">Printing Partner</span>{" "}in
-              <br />Tamil Nadu
-            </h1>
-
+        <div className="absolute bottom-10 right-10 z-10">
+          <div>
             {/* CTA Buttons */}
-            <div className="flex flex-wrap gap-4 mb-6">
+            <div className="flex flex-wrap gap-4">
               <Link to="/services">
                 <Button
                   size="lg"
-                  className="bg-slate-800/90 hover:bg-slate-700 border border-white/20 text-white font-semibold px-6 h-12 text-base"
+                  className="bg-transparent hover:bg-[#458B73]/20 border border-[#458B73] text-white font-semibold px-6 h-12 text-base"
                 >
                   Explore Services <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
@@ -125,7 +110,7 @@ const Index = () => {
                 <Button
                   size="lg"
                   variant="outline"
-                  className="border-white/30 bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 hover:text-white font-semibold px-6 h-12 text-base"
+                  className="border-[#458B73] bg-transparent text-white hover:bg-[#458B73]/20 hover:text-white font-semibold px-6 h-12 text-base"
                 >
                   <MapPin className="mr-2 h-5 w-5" /> Find a Branch
                 </Button>
@@ -134,22 +119,6 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Stats bar */}
-        <div className="absolute bottom-0 left-0 right-0 z-20 bg-[#0d1f2d]/85 backdrop-blur-sm border-t border-white/10">
-          <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-white/10">
-            {[
-              { value: "4",    label: "BRANCHES" },
-              { value: "10+",  label: "YEARS OF SERVICE" },
-              { value: "50K+", label: "HAPPY CUSTOMERS" },
-              { value: "20+",  label: "SERVICES OFFERED" },
-            ].map((stat) => (
-              <div key={stat.label} className="flex flex-col items-center py-5 px-3">
-                <span className="text-xl md:text-2xl font-bold text-cyan-400">{stat.value}</span>
-                <span className="text-[9px] md:text-[10px] font-semibold tracking-[0.12em] text-white/55 mt-1">{stat.label}</span>
-              </div>
-            ))}
-          </div>
-        </div>
       </section>
 
       {/* Branches */}

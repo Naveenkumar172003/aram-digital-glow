@@ -1,50 +1,50 @@
 import { Link } from "react-router-dom";
 import { MapPin, Phone } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import SectionTitle from "@/components/SectionTitle";
 import { branches } from "@/data/branches";
+import styles from "@/components/BranchCard.module.css";
 
 const Branches = () => (
-  <div className="py-20">
+  <div className="py-20 relative">
     <div className="container">
-      <SectionTitle title="Our Branches" subtitle="Visit any of our locations for quick, reliable service" />
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <SectionTitle title="Our Branches" subtitle="Visit any of our 4 branches across Tamil Nadu" />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-10">
         {branches.map((b, i) => (
-          <div key={b.name} className="card-hover rounded-xl border bg-card overflow-hidden animate-fade-up" style={{ animationDelay: `${i * 0.1}s` }}>
-            <div className="relative h-44 overflow-hidden">
-              <img
-                src={b.image}
-                alt={b.name}
-                className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-              <span className="absolute bottom-3 left-4 text-white font-bold text-lg tracking-wide drop-shadow">
-                {b.name}
-              </span>
-            </div>
-            <div className="p-6">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent">
-                  <MapPin className="h-5 w-5 text-primary" />
-                </div>
-                <h3 className="text-xl font-bold">{b.name}</h3>
+          <div
+            key={b.name}
+            className={styles["glass-card"] + " relative overflow-hidden animate-fade-up"}
+            style={{ animationDelay: `${i * 0.1}s` }}
+          >
+            <img
+              src={b.image}
+              alt={b.name}
+              className="card-bg w-full h-48 object-cover"
+            />
+            <div className="card-content p-6 flex flex-col items-center justify-between h-full">
+              <div className="branch-title mb-2" style={{fontSize:'2rem',fontWeight:'700',letterSpacing:'0.02em',color:'#fff',textShadow:'0 2px 8px rgba(0,0,0,0.25)'}}>{b.name}</div>
+              <div className="branch-details mb-2 flex items-center gap-2">
+                <MapPin className="h-5 w-5 text-accent" />
+                <span>{b.shortAddress}</span>
               </div>
-              <p className="text-sm text-muted-foreground flex items-center gap-2 mb-1">
-                <MapPin className="h-4 w-4 text-primary shrink-0" />{b.address}
-              </p>
-              <p className="text-sm text-muted-foreground flex items-center gap-2 mb-4">
-                <Phone className="h-4 w-4 text-primary shrink-0" />{b.phone}
-              </p>
-              <Link to={`/branches/${b.slug}`}>
-                <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90">
-                  View Details
-                </Button>
+              <div className="branch-details mb-2 flex items-center gap-2">
+                <Phone className="h-5 w-5 text-accent" />
+                <span>{b.phone}</span>
+              </div>
+              <Link to={`/branches/${b.slug}`} className={styles["branch-btn"]}>
+                <span className="branch-btn px-6 py-2 font-semibold">View Branch Details</span>
               </Link>
             </div>
           </div>
         ))}
       </div>
     </div>
+    {/* Decorative SVGs for uniqueness */}
+    <svg className="absolute left-0 top-0 -z-10" width="180" height="180" fill="none" viewBox="0 0 180 180">
+      <circle cx="90" cy="90" r="80" fill="#519A66" fillOpacity="0.12" />
+    </svg>
+    <svg className="absolute right-0 bottom-0 -z-10" width="220" height="220" fill="none" viewBox="0 0 220 220">
+      <rect x="30" y="30" width="160" height="160" rx="80" fill="#355872" fillOpacity="0.10" />
+    </svg>
   </div>
 );
 
