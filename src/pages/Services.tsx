@@ -65,7 +65,7 @@ const Services = () => {
       <div className="container">
         <SectionTitle title="Printing Services" subtitle="Click the card to explore all our services" />
 
-        <div className="rounded-2xl border border-black bg-blue-100/70 p-4 md:p-6 shadow-sm overflow-hidden">
+        <div className="rounded-2xl border border-black p-4 md:p-6 shadow-sm overflow-hidden" style={{backgroundColor: '#7EACB5'}}>
           <div ref={topSectionRef} className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
             <div className="h-[320px]">
               <ServiceCard icon={featuredService.icon} title={featuredService.title} description={featuredService.desc} image={featuredService.image} fullImage />
@@ -90,7 +90,7 @@ const Services = () => {
           </div>
         </div>
 
-        <div className="rounded-2xl border border-black bg-blue-100/70 p-4 md:p-6 shadow-sm overflow-hidden mt-8">
+        <div className="rounded-2xl border border-black p-4 md:p-6 shadow-sm overflow-hidden mt-8" style={{backgroundColor: '#7EACB5'}}>
           <div ref={bottomSectionRef} className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
             <div className="h-[320px]">
               <ServiceCard icon={featuredService.icon} title={featuredService.title} description={featuredService.desc} image={featuredService.image} fullImage />
