@@ -1,11 +1,20 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, BookOpen, MapPin, Palette, Printer, ScanLine } from "lucide-react";
+import {
+  ArrowRight,
+  BookOpen,
+  Palette,
+  Printer,
+  ScanLine,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
+import CategoryCard from "@/components/CategoryCard";
+import ProductCard from "@/components/ProductCard";
 import SectionTitle from "@/components/SectionTitle";
 import ServiceCard from "@/components/ServiceCard";
+import { categories, featuredProducts } from "@/data/products";
 import { branches } from "@/data/branches";
-import heroVideo from "@/assets/back1.mp4";
+import heroVideo from "@/assets/back5.mp4";
 
 const services = [
   {
@@ -41,37 +50,17 @@ const animatedSixServices = Array.from(
 );
 
 const Index = () => {
-  const [topServicesExpanded, setTopServicesExpanded] = useState(false);
-  const [bottomServicesExpanded, setBottomServicesExpanded] = useState(false);
-  const topServicesSectionRef = useRef<HTMLDivElement | null>(null);
-  const bottomServicesSectionRef = useRef<HTMLDivElement | null>(null);
+  const [servicesExpanded, setServicesExpanded] = useState(false);
+  const servicesSectionRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    const target = topServicesSectionRef.current;
+    const target = servicesSectionRef.current;
     if (!target) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setTopServicesExpanded(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.25 },
-    );
-
-    observer.observe(target);
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    const target = bottomServicesSectionRef.current;
-    if (!target) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setBottomServicesExpanded(true);
+          setServicesExpanded(true);
           observer.disconnect();
         }
       },
@@ -84,76 +73,51 @@ const Index = () => {
 
   return (
     <div>
-      <section className="relative h-screen flex items-center overflow-hidden">
-        <div className="absolute inset-0">
-          <video autoPlay loop muted playsInline className="h-full w-full object-cover">
-            <source src={heroVideo} type="video/mp4" />
-          </video>
-          <div className="absolute inset-0 bg-black/60" />
-        </div>
-
-        <div className="absolute bottom-10 right-10 z-10">
-          <div className="flex flex-wrap gap-4">
-            <Link to="/services">
-              <Button
-                size="lg"
-                className="bg-transparent hover:bg-[#458B73]/20 border border-[#458B73] text-white font-semibold px-6 h-12 text-base"
-              >
-                Explore Services <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
-            <Link to="/branches">
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-[#458B73] bg-transparent text-white hover:bg-[#458B73]/20 hover:text-white font-semibold px-6 h-12 text-base"
-              >
-                <MapPin className="mr-2 h-5 w-5" /> Find a Branch
-              </Button>
-            </Link>
-          </div>
-        </div>
+      <section className="relative h-[100svh] md:h-screen overflow-hidden">
+        <video autoPlay loop muted playsInline className="absolute inset-0 h-full w-full object-cover">
+          <source src={heroVideo} type="video/mp4" />
+        </video>
+        <div className="absolute inset-0 bg-black/50" />
       </section>
 
-      <section className="py-20 bg-secondary">
+      <section className="py-10 md:py-16 bg-gray-50">
         <div className="container">
           <SectionTitle
-            title="Our Branches"
-            subtitle="Visit any of our 4 branches across Tamil Nadu"
+            title="Our Product Categories"
+            subtitle="Browse our complete range of machines and equipment"
           />
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {branches.map((b, i) => (
-              <div
-                key={b.slug}
-                className="card-hover relative aspect-[16/10] rounded-xl border overflow-hidden animate-fade-up"
-                style={{ animationDelay: `${i * 0.1}s` }}
-              >
-                <img src={b.image} alt={b.name} className="absolute inset-0 h-full w-full object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-transparent" />
-                <div className="absolute inset-x-0 bottom-0 p-6 text-center">
-                  <h3 className="font-semibold text-2xl mb-4 text-white drop-shadow">{b.name}</h3>
-                  <Link to={`/branches/${b.slug}`}>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="border-white/70 bg-white/10 text-white hover:bg-white/20 hover:text-white"
-                    >
-                      View Branch Details
-                    </Button>
-                  </Link>
-                </div>
-              </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {categories.map((category, index) => (
+              <CategoryCard key={category.slug} category={category} index={index} />
             ))}
           </div>
         </div>
       </section>
 
-      <section className="py-12">
+      <section className="py-10 md:py-16">
+        <div className="container">
+          <SectionTitle title="Best Selling Products" subtitle="Our most popular machines and equipment" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {featuredProducts.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+          <div className="text-center mt-8 md:mt-10">
+            <Link to="/category/brand-new-xerox">
+              <Button size="lg" className="bg-green-600 hover:bg-green-700 text-white font-semibold px-8">
+                View All Products <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-10 md:py-12">
         <div className="container">
           <SectionTitle title="Printing Services" subtitle="Click the card to explore all our services" />
           <div className="rounded-2xl border border-black bg-blue-100/70 p-4 md:p-6 shadow-sm overflow-hidden">
-            <div ref={topServicesSectionRef} className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
-              <div className="h-[320px]">
+            <div ref={servicesSectionRef} className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
+              <div className="h-[260px] md:h-[320px]">
                 <ServiceCard
                   icon={services[0].icon}
                   title={services[0].title}
@@ -164,24 +128,24 @@ const Index = () => {
               </div>
 
               <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-6">
-                {animatedSixServices.map((s, idx) => (
+                {animatedSixServices.map((service, index) => (
                   <div
-                    key={`${s.title}-top-${idx}`}
-                    className="h-[150px]"
+                    key={`${service.title}-${index}`}
+                    className="h-[130px] md:h-[150px]"
                     style={{
-                      opacity: topServicesExpanded ? 1 : 0,
-                      transform: topServicesExpanded
+                      opacity: servicesExpanded ? 1 : 0,
+                      transform: servicesExpanded
                         ? "translateX(0) scale(1)"
                         : "translateX(-260px) scale(0.4)",
-                      transition: `opacity 0.55s ease ${idx * 80}ms, transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) ${idx * 80}ms`,
-                      pointerEvents: topServicesExpanded ? "auto" : "none",
+                      transition: `opacity 0.55s ease ${index * 80}ms, transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) ${index * 80}ms`,
+                      pointerEvents: servicesExpanded ? "auto" : "none",
                     }}
                   >
                     <ServiceCard
-                      icon={s.icon}
-                      title={s.title}
-                      description={s.desc}
-                      image={s.image}
+                      icon={service.icon}
+                      title={service.title}
+                      description={service.desc}
+                      image={service.image}
                       compact
                       fullImage
                     />
@@ -190,45 +154,62 @@ const Index = () => {
               </div>
             </div>
           </div>
+        </div>
+      </section>
 
-          <div className="rounded-2xl border border-black bg-blue-100/70 p-4 md:p-6 shadow-sm overflow-hidden mt-8">
-            <div ref={bottomServicesSectionRef} className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
-              <div className="h-[320px]">
-                <ServiceCard
-                  icon={services[0].icon}
-                  title={services[0].title}
-                  description={services[0].desc}
-                  image={services[0].image}
-                  fullImage
+      <section className="py-10 md:py-16 bg-gray-50">
+        <div className="container">
+          <SectionTitle title="Our Branches" subtitle="Visit any of our branches across Tamil Nadu" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {branches.map((branch, index) => (
+              <Link
+                key={branch.slug}
+                to={`/branches/${branch.slug}`}
+                className="card-hover relative aspect-[4/3] rounded-xl overflow-hidden animate-fade-up group block"
+                style={{ animationDelay: `${index * 0.1}s` }}
+              >
+                <img
+                  src={branch.image}
+                  alt={branch.name}
+                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
-              </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-transparent" />
+                <div className="absolute inset-x-0 bottom-0 p-5 text-center">
+                  <h3 className="font-bold text-lg md:text-xl text-white drop-shadow">{branch.name}</h3>
+                  <p className="text-white/70 text-sm mt-1">{branch.shortAddress}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
 
-              <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-6">
-                {animatedSixServices.map((s, idx) => (
-                  <div
-                    key={`${s.title}-bottom-${idx}`}
-                    className="h-[150px]"
-                    style={{
-                      opacity: bottomServicesExpanded ? 1 : 0,
-                      transform: bottomServicesExpanded
-                        ? "translateX(0) scale(1)"
-                        : "translateX(-260px) scale(0.4)",
-                      transition: `opacity 0.55s ease ${idx * 80}ms, transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) ${idx * 80}ms`,
-                      pointerEvents: bottomServicesExpanded ? "auto" : "none",
-                    }}
-                  >
-                    <ServiceCard
-                      icon={s.icon}
-                      title={s.title}
-                      description={s.desc}
-                      image={s.image}
-                      compact
-                      fullImage
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
+      <section className="py-10 md:py-16 bg-green-700 text-white">
+        <div className="container text-center">
+          <h2 className="text-2xl md:text-4xl font-bold mb-4">Need a Machine? Talk to Us!</h2>
+          <p className="text-base md:text-lg text-white/80 mb-6 md:mb-8 max-w-2xl mx-auto">
+            Whether you need a brand new copier, a refurbished machine, or expert service, we have you covered.
+          </p>
+          <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4">
+            <a
+              href="https://wa.me/919092592925?text=Hi, I'm interested in your machines"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full sm:w-auto"
+            >
+              <Button size="lg" className="w-full sm:w-auto bg-white text-green-700 hover:bg-green-50 font-semibold px-8 h-12">
+                WhatsApp Us
+              </Button>
+            </a>
+            <Link to="/contact" className="w-full sm:w-auto">
+              <Button
+                size="lg"
+                variant="outline"
+                className="w-full sm:w-auto border-white text-white hover:bg-white/10 font-semibold px-8 h-12"
+              >
+                Contact Us
+              </Button>
+            </Link>
           </div>
         </div>
       </section>

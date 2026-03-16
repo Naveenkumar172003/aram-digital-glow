@@ -1,7 +1,10 @@
 {
   "permissions": {
     "allow": [
-      "Read(//c/Users/SandhoshGowravan/aram-digital-glow/src/**)"
+      "Read(//c/Users/SandhoshGowravan/aram-digital-glow/src/**)",
+      "WebFetch(domain:pcs.services)",
+      "Read(//c/Users/SandhoshGowravan/aram-digital-glow//**)",
+      "Bash(npx vite:*)"
     ]
   }
 }
