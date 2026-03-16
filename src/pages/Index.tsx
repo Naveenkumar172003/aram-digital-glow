@@ -1,206 +1,124 @@
-import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
+import { ArrowRight, Wrench, Shield, Headphones } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { MapPin, ArrowRight, Copy, Palette, BookOpen, ScanLine, Printer, Monitor, CheckCircle, Layers, Camera } from "lucide-react";
+import HeroCarousel from "@/components/HeroCarousel";
+import CategoryCard from "@/components/CategoryCard";
+import ProductCard from "@/components/ProductCard";
 import SectionTitle from "@/components/SectionTitle";
-import ServiceCard from "@/components/ServiceCard";
+import { categories, featuredProducts } from "@/data/products";
 import { branches } from "@/data/branches";
-import heroVideo from "@/assets/back1.mp4";
 
-const branchOverlays = [
-  "rgba(0,80,40,0.40)",
-  "rgba(0,60,50,0.40)",
-  "rgba(10,70,30,0.40)",
-  "rgba(20,50,40,0.40)",
+const features = [
+  { icon: Wrench, title: "Expert Service", desc: "Certified technicians for all machine repairs" },
+  { icon: Shield, title: "Genuine Parts", desc: "Original spare parts and toner cartridges" },
+  { icon: Headphones, title: "24/7 Support", desc: "Always available for your service needs" },
 ];
 
-const services = [
-  { icon: Printer, title: "Printing", desc: "Sharp, professional prints in any format", image: "https://images.unsplash.com/photo-1586075010923-2dd4570fb338?w=400&auto=format&fit=crop" },
-  { icon: BookOpen, title: "Spiral Binding", desc: "Professional spiral binding", image: "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&auto=format&fit=crop" },
-  { icon: Palette, title: "Color Printing", desc: "Vivid, high-quality color prints", image: "https://images.unsplash.com/photo-1588681664899-f142ff2dc9b1?w=400&auto=format&fit=crop" },
-  { icon: ScanLine, title: "Scanning", desc: "Fast digital document scanning", image: "https://images.unsplash.com/photo-1563986768494-4dee2763ff3f?w=400&auto=format&fit=crop" },
-];
+const Index = () => (
+  <div>
+    {/* Hero Carousel */}
+    <HeroCarousel />
 
-const compactServices = services.slice(1);
-const animatedSixServices = Array.from({ length: 6 }, (_, idx) => compactServices[idx % compactServices.length]);
+    {/* Features strip */}
+    <section className="bg-green-600 text-white">
+      <div className="container py-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {features.map((f) => (
+            <div key={f.title} className="flex items-center gap-4">
+              <div className="h-12 w-12 rounded-full bg-white/20 flex items-center justify-center shrink-0">
+                <f.icon className="h-6 w-6" />
+              </div>
+              <div>
+                <h3 className="font-semibold">{f.title}</h3>
+                <p className="text-sm text-white/80">{f.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
 
-const Index = () => {
-  const [activeBranch, setActiveBranch] = useState(0);
-  const [topServicesExpanded, setTopServicesExpanded] = useState(false);
-  const [bottomServicesExpanded, setBottomServicesExpanded] = useState(false);
-  const topServicesSectionRef = useRef<HTMLDivElement | null>(null);
-  const bottomServicesSectionRef = useRef<HTMLDivElement | null>(null);
+    {/* Product Categories */}
+    <section className="py-16 bg-gray-50">
+      <div className="container">
+        <SectionTitle title="Our Product Categories" subtitle="Browse our complete range of machines and equipment" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {categories.map((cat, i) => (
+            <CategoryCard key={cat.slug} category={cat} index={i} />
+          ))}
+        </div>
+      </div>
+    </section>
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setActiveBranch((prev) => (prev + 1) % branches.length);
-    }, 3500);
-    return () => clearInterval(timer);
-  }, []);
+    {/* Best Selling Products */}
+    <section className="py-16">
+      <div className="container">
+        <SectionTitle title="Best Selling Products" subtitle="Our most popular machines and equipment" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {featuredProducts.map((p) => (
+            <ProductCard key={p.id} product={p} />
+          ))}
+        </div>
+        <div className="text-center mt-10">
+          <Link to="/category/brand-new-xerox">
+            <Button size="lg" className="bg-green-600 hover:bg-green-700 text-white font-semibold px-8">
+              View All Products <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
+          </Link>
+        </div>
+      </div>
+    </section>
 
-  useEffect(() => {
-    const target = topServicesSectionRef.current;
-    if (!target) return;
+    {/* Branches */}
+    <section className="py-16 bg-gray-50">
+      <div className="container">
+        <SectionTitle title="Our Branches" subtitle="Visit any of our branches across Tamil Nadu" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {branches.map((b, i) => (
+            <Link
+              key={b.slug}
+              to={`/branches/${b.slug}`}
+              className="card-hover relative aspect-[4/3] rounded-xl overflow-hidden animate-fade-up group block"
+              style={{ animationDelay: `${i * 0.1}s` }}
+            >
+              <img src={b.image} alt={b.name} className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 p-5 text-center">
+                <h3 className="font-bold text-xl text-white drop-shadow">{b.name}</h3>
+                <p className="text-white/70 text-sm mt-1">{b.shortAddress}</p>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </section>
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setTopServicesExpanded(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.25 },
-    );
-
-    observer.observe(target);
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    const target = bottomServicesSectionRef.current;
-    if (!target) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setBottomServicesExpanded(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.25 },
-    );
-
-    observer.observe(target);
-    return () => observer.disconnect();
-  }, []);
-
-  return (
-    <div>
-      {/* Hero */}
-      <section className="relative h-screen flex items-center overflow-hidden">
-        {/* Background video */}
-        <div className="absolute inset-0">
-          <video
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="h-full w-full object-cover"
+    {/* CTA Banner */}
+    <section className="py-16 bg-green-700 text-white">
+      <div className="container text-center">
+        <h2 className="text-3xl md:text-4xl font-bold mb-4">Need a Machine? Talk to Us!</h2>
+        <p className="text-lg text-white/80 mb-8 max-w-2xl mx-auto">
+          Whether you need a brand new copier, a refurbished machine, or expert service — we've got you covered.
+        </p>
+        <div className="flex flex-wrap justify-center gap-4">
+          <a
+            href="https://wa.me/919092592925?text=Hi, I'm interested in your machines"
+            target="_blank"
+            rel="noopener noreferrer"
           >
-            <source src={heroVideo} type="video/mp4" />
-          </video>
-          {/* Dark overlay */}
-          <div className="absolute inset-0 bg-black/60" />
+            <Button size="lg" className="bg-white text-green-700 hover:bg-green-50 font-semibold px-8 h-12">
+              WhatsApp Us
+            </Button>
+          </a>
+          <Link to="/contact">
+            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10 font-semibold px-8 h-12">
+              Contact Us
+            </Button>
+          </Link>
         </div>
-
-        {/* Content */}
-        <div className="absolute bottom-10 right-10 z-10">
-          <div>
-            {/* CTA Buttons */}
-            <div className="flex flex-wrap gap-4">
-              <Link to="/services">
-                <Button
-                  size="lg"
-                  className="bg-transparent hover:bg-[#458B73]/20 border border-[#458B73] text-white font-semibold px-6 h-12 text-base"
-                >
-                  Explore Services <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </Link>
-              <Link to="/branches">
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="border-[#458B73] bg-transparent text-white hover:bg-[#458B73]/20 hover:text-white font-semibold px-6 h-12 text-base"
-                >
-                  <MapPin className="mr-2 h-5 w-5" /> Find a Branch
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-
-      </section>
-
-      {/* Branches */}
-      <section className="py-20 bg-secondary">
-        <div className="container">
-          <SectionTitle title="Our Branches" subtitle="Visit any of our 4 branches across Tamil Nadu" />
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {branches.map((b, i) => (
-              <div key={b.slug} className="card-hover relative aspect-[16/10] rounded-xl border overflow-hidden animate-fade-up" style={{ animationDelay: `${i * 0.1}s` }}>
-                <img src={b.image} alt={b.name} className="absolute inset-0 h-full w-full object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-transparent" />
-                <div className="absolute inset-x-0 bottom-0 p-6 text-center">
-                  <h3 className="font-semibold text-2xl mb-4 text-white drop-shadow">{b.name}</h3>
-                  <Link to={`/branches/${b.slug}`}>
-                    <Button variant="outline" size="sm" className="border-white/70 bg-white/10 text-white hover:bg-white/20 hover:text-white">
-                      View Branch Details
-                    </Button>
-                  </Link>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Services Preview */}
-      <section className="py-12">
-        <div className="container">
-          <SectionTitle title="Printing Services" subtitle="Click the card to explore all our services" />
-          <div className="rounded-2xl border border-black bg-blue-100/70 p-4 md:p-6 shadow-sm overflow-hidden">
-            <div ref={topServicesSectionRef} className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
-              <div className="h-[320px]">
-                <ServiceCard icon={services[0].icon} title={services[0].title} description={services[0].desc} image={services[0].image} fullImage />
-              </div>
-
-              <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-6">
-                {animatedSixServices.map((s, idx) => (
-                  <div
-                    key={`${s.title}-top-${idx}`}
-                    className="h-[150px]"
-                    style={{
-                      opacity: topServicesExpanded ? 1 : 0,
-                      transform: topServicesExpanded ? "translateX(0) scale(1)" : "translateX(-260px) scale(0.4)",
-                      transition: `opacity 0.55s ease ${idx * 80}ms, transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) ${idx * 80}ms`,
-                      pointerEvents: topServicesExpanded ? "auto" : "none",
-                    }}
-                  >
-                    <ServiceCard icon={s.icon} title={s.title} description={s.desc} image={s.image} compact fullImage />
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          <div className="rounded-2xl border border-black bg-blue-100/70 p-4 md:p-6 shadow-sm overflow-hidden mt-8">
-            <div ref={bottomServicesSectionRef} className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
-              <div className="h-[320px]">
-                <ServiceCard icon={services[0].icon} title={services[0].title} description={services[0].desc} image={services[0].image} fullImage />
-              </div>
-
-              <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-6">
-                {animatedSixServices.map((s, idx) => (
-                  <div
-                    key={`${s.title}-bottom-${idx}`}
-                    className="h-[150px]"
-                    style={{
-                      opacity: bottomServicesExpanded ? 1 : 0,
-                      transform: bottomServicesExpanded ? "translateX(0) scale(1)" : "translateX(-260px) scale(0.4)",
-                      transition: `opacity 0.55s ease ${idx * 80}ms, transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) ${idx * 80}ms`,
-                      pointerEvents: bottomServicesExpanded ? "auto" : "none",
-                    }}
-                  >
-                    <ServiceCard icon={s.icon} title={s.title} description={s.desc} image={s.image} compact fullImage />
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-    </div>
-  );
-};
+      </div>
+    </section>
+  </div>
+);
 
 export default Index;
