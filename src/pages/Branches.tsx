@@ -1,11 +1,20 @@
 import { Link } from "react-router-dom";
 import { MapPin, Phone } from "lucide-react";
 import SectionTitle from "@/components/SectionTitle";
-import { useAdminStore } from "@/hooks/useAdminStore";
+import { useFirebaseData } from "@/hooks/useFirebaseData";
+import { Branch } from "@/data/branches";
 import styles from "@/components/BranchCard.module.css";
 
 const Branches = () => {
-  const { branches } = useAdminStore();
+  const { data: branches, loading } = useFirebaseData<Branch>({ collectionName: 'branches' });
+  
+  if (loading) {
+    return (
+      <div className="py-20 text-center">
+        <p className="text-gray-600">Loading branches...</p>
+      </div>
+    );
+  }
   
   return (
   <div className="py-20 relative">

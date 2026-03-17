@@ -12,7 +12,9 @@ import CategoryCard from "@/components/CategoryCard";
 import ProductCard from "@/components/ProductCard";
 import SectionTitle from "@/components/SectionTitle";
 import ServiceCard from "@/components/ServiceCard";
-import { useAdminStore } from "@/hooks/useAdminStore";
+import { useFirebaseData } from "@/hooks/useFirebaseData";
+import { Category, Product } from "@/data/products";
+import { Branch } from "@/data/branches";
 import heroVideo from "@/assets/back4.mp4";
 
 const services = [
@@ -51,7 +53,9 @@ const animatedSixServices = Array.from(
 const Index = () => {
   const [servicesExpanded, setServicesExpanded] = useState(false);
   const servicesSectionRef = useRef<HTMLDivElement | null>(null);
-  const { categories, products, branches } = useAdminStore();
+  const { data: categories } = useFirebaseData<Category>({ collectionName: 'categories' });
+  const { data: products } = useFirebaseData<Product>({ collectionName: 'products' });
+  const { data: branches } = useFirebaseData<Branch>({ collectionName: 'branches' });
   
   // Get featured products
   const featuredProducts = products.filter((p) => p.featured);

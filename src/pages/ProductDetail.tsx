@@ -2,7 +2,8 @@ import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { ChevronRight, MessageCircle, ShoppingCart, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useAdminStore } from "@/hooks/useAdminStore";
+import { useFirebaseData } from "@/hooks/useFirebaseData";
+import { Product } from "@/data/products";
 import ProductCard from "@/components/ProductCard";
 
 const socialLinks = [
@@ -15,12 +16,20 @@ const socialLinks = [
 
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const { products } = useAdminStore();
+  const { data: products, loading } = useFirebaseData<Product>({ collectionName: 'products' });
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
 
-  // Find product from admin store
+  // Find product from Firebase
   const product = products.find((p) => p.id === id);
+
+  if (loading) {
+    return (
+      <div className="py-20 text-center">
+        <p className="text-gray-600">Loading product...</p>
+      </div>
+    );
+  }
 
   if (!product) {
     return (

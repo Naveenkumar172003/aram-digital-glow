@@ -3,7 +3,8 @@ import { MapPin, Phone, Copy, Palette, Printer, BookOpen, ScanLine, Image, FileT
 import { Button } from "@/components/ui/button";
 import SectionTitle from "@/components/SectionTitle";
 import ServiceCard from "@/components/ServiceCard";
-import { useAdminStore } from "@/hooks/useAdminStore";
+import { useFirebaseData } from "@/hooks/useFirebaseData";
+import { Branch } from "@/data/branches";
 
 const services = [
   { icon: Copy, title: "A4 Xerox", desc: "Fast A4 copies" },
@@ -17,8 +18,16 @@ const services = [
 
 const BranchDetail = () => {
   const { slug } = useParams();
-  const { branches } = useAdminStore();
+  const { data: branches, loading } = useFirebaseData<Branch>({ collectionName: 'branches' });
   const branch = branches.find((b) => b.slug === slug);
+
+  if (loading) {
+    return (
+      <div className="container py-20 text-center">
+        <p className="text-gray-600">Loading branch...</p>
+      </div>
+    );
+  }
 
   if (!branch) {
     return (

@@ -2,11 +2,13 @@ import { useParams, Link } from "react-router-dom";
 import { ChevronRight, MessageCircle } from "lucide-react";
 import SectionTitle from "@/components/SectionTitle";
 import ProductCard from "@/components/ProductCard";
-import { useAdminStore } from "@/hooks/useAdminStore";
+import { useFirebaseData } from "@/hooks/useFirebaseData";
+import { Category, Product } from "@/data/products";
 
 const CategoryPage = () => {
   const { slug } = useParams<{ slug: string }>();
-  const { categories, products } = useAdminStore();
+  const { data: categories, loading: categoriesLoading } = useFirebaseData<Category>({ collectionName: 'categories' });
+  const { data: products, loading: productsLoading } = useFirebaseData<Product>({ collectionName: 'products' });
   
   const category = categories.find((c) => c.slug === slug);
   const categoryProducts = products.filter((p) => p.categorySlug === slug);
@@ -17,6 +19,14 @@ const CategoryPage = () => {
     slug === "laptops" ||
     slug === "spare-parts";
   const pageContainerClass = hideHeroBanner ? "container max-w-5xl" : "container";
+
+  if (categoriesLoading || productsLoading) {
+    return (
+      <div className="py-20 text-center">
+        <p className="text-gray-600">Loading category...</p>
+      </div>
+    );
+  }
 
   if (!category) {
     return (
