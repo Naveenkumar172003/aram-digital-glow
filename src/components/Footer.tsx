@@ -10,7 +10,10 @@ const Footer = () => (
       <div>
         <div className="flex items-center gap-2 mb-4">
           <img src={logo} alt="Aram Xerox" className="h-12 w-auto rounded-full" />
-          <span className="font-bold text-xl text-green-400"> Xerox</span>
+          <div className="flex flex-col">
+            <span className="font-bold text-xl text-green-400">Xerox</span>
+            <span className="text-xs text-gray-500">since 2010</span>
+          </div>
         </div>
         <p className="text-sm text-gray-400 leading-relaxed">
           Your trusted partner for xerox machines, printers, and laptop solutions across Tamil Nadu.

@@ -121,10 +121,10 @@ const Index = () => {
         </div>
       </section>
 
-      <section className="py-10 md:py-12">
-        <div className="container">
+      <section className="py-10 md:py-12 w-full">
+        <div className="px-4 md:px-6">
           <SectionTitle title="Printing Services" subtitle="Click the card to explore all our services" />
-          <div className="rounded-2xl border border-black bg-blue-100/70 p-4 md:p-6 shadow-sm overflow-hidden">
+          <div className="overflow-hidden">
             <div ref={servicesSectionRef} className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
               <div className="h-[260px] md:h-[320px]">
                 <ServiceCard
@@ -193,10 +193,10 @@ const Index = () => {
         </div>
       </section>
 
-      <section className="py-10 md:py-16 bg-green-700 text-white">
+      <section className="py-10 md:py-16 bg-green-700">
         <div className="container text-center">
-          <h2 className="text-2xl md:text-4xl font-bold mb-4">Need a Machine? Talk to Us!</h2>
-          <p className="text-base md:text-lg text-white/80 mb-6 md:mb-8 max-w-2xl mx-auto">
+          <h2 className="text-2xl md:text-4xl font-bold mb-4 text-black">Need a Machine? Talk to Us!</h2>
+          <p className="text-base md:text-lg text-gray-800 mb-6 md:mb-8 max-w-2xl mx-auto">
             Whether you need a brand new copier, a refurbished machine, or expert service, we have you covered.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4">
@@ -206,7 +206,7 @@ const Index = () => {
               rel="noopener noreferrer"
               className="w-full sm:w-auto"
             >
-              <Button size="lg" className="w-full sm:w-auto bg-white text-green-700 hover:bg-green-50 font-semibold px-8 h-12">
+              <Button size="lg" className="w-full sm:w-auto bg-white text-green-700 hover:bg-gray-100 font-semibold px-8 h-12">
                 WhatsApp Us
               </Button>
             </a>
@@ -214,7 +214,7 @@ const Index = () => {
               <Button
                 size="lg"
                 variant="outline"
-                className="w-full sm:w-auto border-white text-white hover:bg-white/10 font-semibold px-8 h-12"
+                className="w-full sm:w-auto border-black text-black hover:bg-black/10 font-semibold px-8 h-12"
               >
                 Contact Us
               </Button>

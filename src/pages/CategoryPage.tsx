@@ -32,15 +32,17 @@ const CategoryPage = () => {
   return (
     <div>
       {/* Breadcrumb */}
-      <div className="bg-gray-50 border-b">
-        <div className={`${pageContainerClass} py-3`}>
-          <div className="flex items-center gap-2 text-sm text-gray-500">
-            <Link to="/" className="hover:text-green-600 transition-colors">Home</Link>
-            <ChevronRight className="h-3.5 w-3.5" />
-            <span className="text-gray-800 font-medium">{category.name}</span>
+      {slug !== "spare-parts" && (
+        <div className="bg-gray-50 border-b">
+          <div className={`${pageContainerClass} py-3`}>
+            <div className="flex items-center gap-2 text-sm text-gray-500">
+              <Link to="/" className="hover:text-green-600 transition-colors">Home</Link>
+              <ChevronRight className="h-3.5 w-3.5" />
+              <span className="text-gray-800 font-medium">{category.name}</span>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Category hero */}
       {!hideHeroBanner && (

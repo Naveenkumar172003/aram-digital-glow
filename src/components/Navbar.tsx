@@ -34,11 +34,14 @@ const Navbar = () => {
           : "sticky top-0 bg-white border-b border-green-100 shadow-sm"
       }`}
     >
-        <div className="container flex h-16 items-center justify-between">
+        <div className="container flex h-20 items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-1 font-bold text-xl shrink-0">
-            <img src={logo} alt="Aram Xerox Logo" className="h-14 w-auto object-contain" />
-            <span className={`font-bold text-xl ${isHome ? "text-white" : "text-gradient"}`}>Xerox</span>
+          <Link to="/" className="flex items-center gap-0 font-bold text-xl shrink-0 mt-0">
+            <img src={logo} alt="Aram Xerox Logo" className="h-20 w-auto object-contain" />
+            <div className="flex flex-col leading-tight">
+              <span className={`font-bold text-xl ${isHome ? "text-white" : "text-gradient"}`}>Xerox</span>
+              <span className={`text-xs ${isHome ? "text-white/70" : "text-gray-500"}`}>since 2010</span>
+            </div>
           </Link>
 
           {/* Desktop nav */}
