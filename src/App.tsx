@@ -17,6 +17,8 @@ import CategoryPage from "./pages/CategoryPage";
 import ProductDetail from "./pages/ProductDetail";
 import NotFound from "./pages/NotFound";
 import AdminPanel from "./pages/AdminPanel";
+import AdminLogin from "./pages/AdminLogin";
+import MigrateData from "./pages/MigrateData";
 
 const queryClient = new QueryClient();
 
@@ -40,6 +42,8 @@ const App = () => (
             <Route path="/laptop-sales" element={<LaptopSales />} />
             <Route path="/contact" element={<Contact />} />
           </Route>
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin/migrate" element={<MigrateData />} />
           <Route path="/admin" element={<AdminPanel />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

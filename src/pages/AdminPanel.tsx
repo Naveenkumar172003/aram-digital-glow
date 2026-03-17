@@ -1,71 +1,47 @@
 import { useState } from 'react';
-import { Lock, LogOut, RotateCcw } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { LogOut, RotateCcw } from 'lucide-react';
+import { useFirebaseAuth } from '@/hooks/useFirebaseAuth';
 import { useAdminStore } from '@/hooks/useAdminStore';
 import AdminBranches from '@/pages/AdminBranches';
 import AdminCategories from '@/pages/AdminCategories';
 import AdminProducts from '@/pages/AdminProducts';
 
 const AdminPanel = () => {
-  const { isLoggedIn, login, logout, resetToDefaults } = useAdminStore();
-  const [password, setPassword] = useState('');
-  const [loginError, setLoginError] = useState('');
+  const navigate = useNavigate();
+  const { user, loading, logout: firebaseLogout } = useFirebaseAuth();
+  const { resetToDefaults } = useAdminStore();
   const [activeTab, setActiveTab] = useState<'branches' | 'categories' | 'products'>('branches');
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (login(password)) {
-      setPassword('');
-      setLoginError('');
-    } else {
-      setLoginError('Invalid password');
-    }
-  };
+  // If not authenticated and not loading, redirect to login
+  if (!loading && !user) {
+    navigate('/admin/login');
+    return null;
+  }
 
-  if (!isLoggedIn) {
+  // Show loading state
+  if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 flex items-center justify-center p-4">
-        <div className="bg-white rounded-xl shadow-2xl p-8 max-w-md w-full">
-          <div className="flex items-center justify-center mb-6">
-            <div className="bg-green-100 rounded-full p-3">
-              <Lock className="h-6 w-6 text-green-600" />
-            </div>
-          </div>
-          <h1 className="text-2xl font-bold text-center mb-2">Admin Login</h1>
-          <p className="text-gray-600 text-center mb-6">Enter password to access admin panel</p>
-          
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div>
-              <input
-                type="password"
-                placeholder="Enter admin password"
-                value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                  setLoginError('');
-                }}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-              />
-            </div>
-            {loginError && <p className="text-red-600 text-sm">{loginError}</p>}
-            <button
-              type="submit"
-              className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-lg transition-colors"
-            >
-              Login
-            </button>
-          </form>
-          {/* <p className="text-xs text-gray-500 text-center mt-4">Demo password: admin123</p> */}
-        </div>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <p className="text-gray-600">Loading...</p>
       </div>
     );
   }
+
+  const handleLogout = async () => {
+    await firebaseLogout();
+    navigate('/admin/login');
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="bg-white border-b">
         <div className="max-w-7xl mx-auto px-4 py-6 flex justify-between items-center">
-          <h1 className="text-3xl font-bold text-gray-900">Admin Panel</h1>
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">Admin Panel</h1>
+            {user?.email && <p className="text-sm text-gray-600 mt-1">Logged in as: {user.email}</p>}
+          </div>
           <div className="flex gap-3">
             <button
               onClick={resetToDefaults}
@@ -75,7 +51,7 @@ const AdminPanel = () => {
               Reset Data
             </button>
             <button
-              onClick={logout}
+              onClick={handleLogout}
               className="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors text-sm"
             >
               <LogOut className="h-4 w-4" />

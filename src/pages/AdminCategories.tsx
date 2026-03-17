@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Edit2, Check, X, Upload } from 'lucide-react';
-import { useAdminStore } from '@/hooks/useAdminStore';
+import { useFirebaseData } from '@/hooks/useFirebaseData';
 import { Category } from '@/data/products';
 
 const convertImageToBase64 = (file: File): Promise<string> => {
@@ -13,23 +13,27 @@ const convertImageToBase64 = (file: File): Promise<string> => {
 };
 
 const AdminCategories = () => {
-  const { categories, updateCategory } = useAdminStore();
-  const [editingSlug, setEditingSlug] = useState<string | null>(null);
+  const { data: categories, loading, update: updateCategory } = useFirebaseData<Category>({ collectionName: 'categories' });
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [formData, setFormData] = useState<Partial<Category>>({});
 
   const handleEdit = (category: Category) => {
-    setEditingSlug(category.slug);
+    setEditingId(category.id);
     setFormData(category);
   };
 
-  const handleSave = (slug: string) => {
-    updateCategory(slug, formData);
-    setEditingSlug(null);
-    setFormData({});
+  const handleSave = async (id: string) => {
+    try {
+      await updateCategory(id, formData);
+      setEditingId(null);
+      setFormData({});
+    } catch (error) {
+      console.error('Error saving category:', error);
+    }
   };
 
   const handleCancel = () => {
-    setEditingSlug(null);
+    setEditingId(null);
     setFormData({});
   };
 
@@ -45,18 +49,46 @@ const AdminCategories = () => {
     }
   };
 
+  if (loading) {
+    return <div className="text-center py-8">Loading categories...</div>;
+  }
+
   return (
     <div>
       <h2 className="text-2xl font-bold mb-6 text-gray-900">Manage Categories</h2>
       <div className="space-y-4">
         {categories.map((category) => (
-          <div key={category.slug} className="bg-white rounded-lg shadow p-6">
-            {editingSlug === category.slug ? (
+          <div key={category.id} className="bg-white rounded-lg shadow p-6">
+            {editingId === category.id ? (
               <div className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Category Name
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.name || ''}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Description
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.description || ''}
+                      onChange={(e) =>
+                        setFormData({ ...formData, description: e.target.value })
+                      }
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                    />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Image URL
                     </label>
                     <div className="space-y-2">
                       <div className="flex gap-2">
@@ -83,34 +115,10 @@ const AdminCategories = () => {
                       )}
                     </div>
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Description
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.description || ''}
-                      onChange={(e) =>
-                        setFormData({ ...formData, description: e.target.value })
-                      }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                    />
-                  </div>
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Image URL
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.image || ''}
-                      onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                    />
-                  </div>
                 </div>
                 <div className="flex gap-2">
                   <button
-                    onClick={() => handleSave(category.slug)}
+                    onClick={() => handleSave(category.id)}
                     className="flex items-center gap-1 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors"
                   >
                     <Check className="h-4 w-4" /> Save
@@ -128,11 +136,13 @@ const AdminCategories = () => {
                 <div className="flex-1">
                   <h3 className="text-lg font-semibold text-gray-900">{category.name}</h3>
                   <p className="text-sm text-gray-600 mt-1">{category.description}</p>
-                  <img
-                    src={category.image}
-                    alt={category.name}
-                    className="w-24 h-24 object-cover rounded mt-2"
-                  />
+                  {category.image && (
+                    <img
+                      src={category.image}
+                      alt={category.name}
+                      className="w-24 h-24 object-cover rounded mt-2 border border-gray-300"
+                    />
+                  )}
                 </div>
                 <button
                   onClick={() => handleEdit(category)}

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Edit2, Check, X, Upload } from 'lucide-react';
-import { useAdminStore } from '@/hooks/useAdminStore';
+import { useFirebaseData } from '@/hooks/useFirebaseData';
 import { Branch } from '@/data/branches';
 
 const convertImageToBase64 = (file: File): Promise<string> => {
@@ -13,23 +13,27 @@ const convertImageToBase64 = (file: File): Promise<string> => {
 };
 
 const AdminBranches = () => {
-  const { branches, updateBranch } = useAdminStore();
-  const [editingSlug, setEditingSlug] = useState<string | null>(null);
+  const { data: branches, loading, update: updateBranch } = useFirebaseData<Branch>({ collectionName: 'branches' });
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [formData, setFormData] = useState<Partial<Branch>>({});
 
   const handleEdit = (branch: Branch) => {
-    setEditingSlug(branch.slug);
+    setEditingId(branch.id);
     setFormData(branch);
   };
 
-  const handleSave = (slug: string) => {
-    updateBranch(slug, formData);
-    setEditingSlug(null);
-    setFormData({});
+  const handleSave = async (id: string) => {
+    try {
+      await updateBranch(id, formData);
+      setEditingId(null);
+      setFormData({});
+    } catch (error) {
+      console.error('Error saving branch:', error);
+    }
   };
 
   const handleCancel = () => {
-    setEditingSlug(null);
+    setEditingId(null);
     setFormData({});
   };
 
@@ -45,13 +49,17 @@ const AdminBranches = () => {
     }
   };
 
+  if (loading) {
+    return <div className="text-center py-8">Loading branches...</div>;
+  }
+
   return (
     <div>
       <h2 className="text-2xl font-bold mb-6 text-gray-900">Manage Branches</h2>
       <div className="space-y-4">
         {branches.map((branch) => (
-          <div key={branch.slug} className="bg-white rounded-lg shadow p-6">
-            {editingSlug === branch.slug ? (
+          <div key={branch.id} className="bg-white rounded-lg shadow p-6">
+            {editingId === branch.id ? (
               <div className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
@@ -132,7 +140,7 @@ const AdminBranches = () => {
                 </div>
                 <div className="flex gap-2">
                   <button
-                    onClick={() => handleSave(branch.slug)}
+                    onClick={() => handleSave(branch.id)}
                     className="flex items-center gap-1 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors"
                   >
                     <Check className="h-4 w-4" /> Save

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Edit2, Check, X, Trash2, Plus, Upload } from 'lucide-react';
-import { useAdminStore } from '@/hooks/useAdminStore';
+import { useFirebaseData } from '@/hooks/useFirebaseData';
 import { Product, ProductSpec } from '@/data/products';
 
 const convertImageToBase64 = (file: File): Promise<string> => {
@@ -13,7 +13,8 @@ const convertImageToBase64 = (file: File): Promise<string> => {
 };
 
 const AdminProducts = () => {
-  const { products, categories, updateProduct, deleteProduct, addProduct } = useAdminStore();
+  const { data: products, loading, add: addProduct, update: updateProduct, delete: deleteProduct } = useFirebaseData<Product>({ collectionName: 'products' });
+  const { data: categories } = useFirebaseData({ collectionName: 'categories' });
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showAddForm, setShowAddForm] = useState(false);
   const [formData, setFormData] = useState<Partial<Product>>({});
@@ -29,7 +30,6 @@ const AdminProducts = () => {
     setShowAddForm(true);
     setEditingId(null);
     setFormData({
-      id: `prod-${Date.now()}`,
       name: '',
       category: '',
       categorySlug: '',
@@ -39,17 +39,25 @@ const AdminProducts = () => {
     });
   };
 
-  const handleSave = (id: string) => {
-    updateProduct(id, formData);
-    setEditingId(null);
-    setFormData({});
+  const handleSave = async (id: string) => {
+    try {
+      await updateProduct(id, formData);
+      setEditingId(null);
+      setFormData({});
+    } catch (error) {
+      console.error('Error saving product:', error);
+    }
   };
 
-  const handleAddProduct = () => {
+  const handleAddProduct = async () => {
     if (formData.name && formData.category) {
-      addProduct(formData as Product);
-      setShowAddForm(false);
-      setFormData({});
+      try {
+        await addProduct(formData as Product);
+        setShowAddForm(false);
+        setFormData({});
+      } catch (error) {
+        console.error('Error adding product:', error);
+      }
     }
   };
 
@@ -60,9 +68,13 @@ const AdminProducts = () => {
     setNewSpec({});
   };
 
-  const handleDeleteProduct = (id: string) => {
+  const handleDeleteProduct = async (id: string) => {
     if (confirm('Are you sure you want to delete this product?')) {
-      deleteProduct(id);
+      try {
+        await deleteProduct(id);
+      } catch (error) {
+        console.error('Error deleting product:', error);
+      }
     }
   };
 
@@ -90,6 +102,10 @@ const AdminProducts = () => {
       }
     }
   };
+
+  if (loading) {
+    return <div className="text-center py-8">Loading products...</div>;
+  }
 
   return (
     <div>
@@ -137,8 +153,8 @@ const AdminProducts = () => {
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
                 >
                   <option value="">Select Category</option>
-                  {categories.map((c) => (
-                    <option key={c.slug} value={c.name}>
+                  {categories.map((c: any) => (
+                    <option key={c.id} value={c.name}>
                       {c.name}
                     </option>
                   ))}
@@ -229,7 +245,7 @@ const AdminProducts = () => {
                     <select
                       value={formData.category || ''}
                       onChange={(e) => {
-                        const cat = categories.find((c) => c.name === e.target.value);
+                        const cat = categories.find((c: any) => c.name === e.target.value);
                         setFormData({
                           ...formData,
                           category: e.target.value,
@@ -238,8 +254,8 @@ const AdminProducts = () => {
                       }}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
                     >
-                      {categories.map((c) => (
-                        <option key={c.slug} value={c.name}>
+                      {categories.map((c: any) => (
+                        <option key={c.id} value={c.name}>
                           {c.name}
                         </option>
                       ))}
@@ -291,56 +307,6 @@ const AdminProducts = () => {
                   </div>
                 </div>
 
-                <div>
-                  <h4 className="font-medium text-gray-700 mb-2">Specifications</h4>
-                  <div className="space-y-2 mb-2">
-                    {(formData.specs || []).map((spec, idx) => (
-                      <div key={idx} className="flex gap-2">
-                        <input
-                          type="text"
-                          value={spec.label}
-                          readOnly
-                          className="flex-1 px-3 py-2 bg-gray-100 border border-gray-300 rounded-lg"
-                        />
-                        <input
-                          type="text"
-                          value={spec.value}
-                          readOnly
-                          className="flex-1 px-3 py-2 bg-gray-100 border border-gray-300 rounded-lg"
-                        />
-                        <button
-                          onClick={() => removeSpec(idx)}
-                          className="px-2 py-2 text-red-600 hover:bg-red-50 rounded-lg"
-                        >
-                          <X className="h-4 w-4" />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      placeholder="Label"
-                      value={newSpec.label || ''}
-                      onChange={(e) => setNewSpec({ ...newSpec, label: e.target.value })}
-                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                    />
-                    <input
-                      type="text"
-                      placeholder="Value"
-                      value={newSpec.value || ''}
-                      onChange={(e) => setNewSpec({ ...newSpec, value: e.target.value })}
-                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                    />
-                    <button
-                      onClick={addSpecField}
-                      className="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
-                    >
-                      Add
-                    </button>
-                  </div>
-                </div>
-
                 <div className="flex gap-2">
                   <button
                     onClick={() => handleSave(product.id)}
@@ -357,20 +323,18 @@ const AdminProducts = () => {
                 </div>
               </div>
             ) : (
-              <div className="flex justify-between items-start">
+              <div className="flex gap-4">
                 <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-gray-900">{product.name}</h3>
-                  <p className="text-sm text-gray-600">
-                    <span className="font-medium">Category:</span> {product.category}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    <span className="font-medium">Description:</span> {product.description}
-                  </p>
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="w-24 h-24 object-cover rounded mt-2"
-                  />
+                  <div className="flex gap-4">
+                    {product.image && (
+                      <img src={product.image} alt={product.name} className="w-20 h-20 object-cover rounded-lg" />
+                    )}
+                    <div className="flex-1">
+                      <h3 className="text-lg font-semibold text-gray-900">{product.name}</h3>
+                      <p className="text-gray-600">{product.category}</p>
+                      <p className="text-sm text-gray-600 mt-1">{product.description}</p>
+                    </div>
+                  </div>
                 </div>
                 <div className="flex gap-2">
                   <button
