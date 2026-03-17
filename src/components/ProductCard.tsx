@@ -4,12 +4,13 @@ import type { Product } from "@/data/products";
 
 interface ProductCardProps {
   product: Product;
+  compact?: boolean;
 }
 
-const ProductCard = ({ product }: ProductCardProps) => (
+const ProductCard = ({ product, compact = false }: ProductCardProps) => (
   <div className="card-hover bg-white rounded-xl border border-gray-100 overflow-hidden group">
     <Link to={`/product/${product.id}`}>
-      <div className="relative aspect-square overflow-hidden bg-gray-50">
+      <div className={`relative overflow-hidden bg-gray-50 ${compact ? "h-44" : "aspect-square"}`}>
         <img
           src={product.image}
           alt={product.name}
@@ -18,13 +19,13 @@ const ProductCard = ({ product }: ProductCardProps) => (
         <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
       </div>
     </Link>
-    <div className="p-4">
+    <div className={compact ? "p-3" : "p-4"}>
       <span className="text-xs font-medium text-green-600 uppercase tracking-wide">{product.category}</span>
       <Link to={`/product/${product.id}`}>
         <h3 className="font-semibold text-gray-800 mt-1 text-sm leading-snug hover:text-green-700 transition-colors">{product.name}</h3>
       </Link>
       <p className="text-xs text-gray-500 mt-1 line-clamp-2">{product.description}</p>
-      <div className="mt-3 flex items-center gap-2">
+      <div className={compact ? "mt-2 flex items-center gap-2" : "mt-3 flex items-center gap-2"}>
         <a
           href={`https://wa.me/919092592925?text=Hi, I'm interested in ${encodeURIComponent(product.name)}`}
           target="_blank"

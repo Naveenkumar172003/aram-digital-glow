@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { ChevronRight, MessageCircle, ShoppingCart, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { productById, productsByCategory } from "@/data/products";
+import { useAdminStore } from "@/hooks/useAdminStore";
 import ProductCard from "@/components/ProductCard";
 
 const socialLinks = [
@@ -15,9 +15,12 @@ const socialLinks = [
 
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const product = id ? productById(id) : undefined;
+  const { products } = useAdminStore();
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
+
+  // Find product from admin store
+  const product = products.find((p) => p.id === id);
 
   if (!product) {
     return (
@@ -30,8 +33,12 @@ const ProductDetail = () => {
     );
   }
 
+  // Get related products from same category
+  const relatedProducts = products.filter(
+    (p) => p.categorySlug === product.categorySlug && p.id !== product.id
+  );
+
   const allImages = product.images ?? [product.image];
-  const relatedProducts = productsByCategory(product.categorySlug).filter((p) => p.id !== product.id);
 
   return (
     <div>

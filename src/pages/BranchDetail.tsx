@@ -3,7 +3,7 @@ import { MapPin, Phone, Copy, Palette, Printer, BookOpen, ScanLine, Image, FileT
 import { Button } from "@/components/ui/button";
 import SectionTitle from "@/components/SectionTitle";
 import ServiceCard from "@/components/ServiceCard";
-import { branchBySlug } from "@/data/branches";
+import { useAdminStore } from "@/hooks/useAdminStore";
 
 const services = [
   { icon: Copy, title: "A4 Xerox", desc: "Fast A4 copies" },
@@ -17,7 +17,8 @@ const services = [
 
 const BranchDetail = () => {
   const { slug } = useParams();
-  const branch = branchBySlug[slug || ""];
+  const { branches } = useAdminStore();
+  const branch = branches.find((b) => b.slug === slug);
 
   if (!branch) {
     return (

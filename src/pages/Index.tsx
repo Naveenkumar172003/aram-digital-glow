@@ -12,9 +12,8 @@ import CategoryCard from "@/components/CategoryCard";
 import ProductCard from "@/components/ProductCard";
 import SectionTitle from "@/components/SectionTitle";
 import ServiceCard from "@/components/ServiceCard";
-import { categories, featuredProducts } from "@/data/products";
-import { branches } from "@/data/branches";
-import heroVideo from "@/assets/back5.mp4";
+import { useAdminStore } from "@/hooks/useAdminStore";
+import heroVideo from "@/assets/back4.mp4";
 
 const services = [
   {
@@ -52,6 +51,10 @@ const animatedSixServices = Array.from(
 const Index = () => {
   const [servicesExpanded, setServicesExpanded] = useState(false);
   const servicesSectionRef = useRef<HTMLDivElement | null>(null);
+  const { categories, products, branches } = useAdminStore();
+  
+  // Get featured products
+  const featuredProducts = products.filter((p) => p.featured);
 
   useEffect(() => {
     const target = servicesSectionRef.current;

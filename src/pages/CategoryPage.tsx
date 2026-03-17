@@ -2,12 +2,21 @@ import { useParams, Link } from "react-router-dom";
 import { ChevronRight, MessageCircle } from "lucide-react";
 import SectionTitle from "@/components/SectionTitle";
 import ProductCard from "@/components/ProductCard";
-import { categoryBySlug, productsByCategory, categories } from "@/data/products";
+import { useAdminStore } from "@/hooks/useAdminStore";
 
 const CategoryPage = () => {
   const { slug } = useParams<{ slug: string }>();
-  const category = slug ? categoryBySlug(slug) : undefined;
-  const products = slug ? productsByCategory(slug) : [];
+  const { categories, products } = useAdminStore();
+  
+  const category = categories.find((c) => c.slug === slug);
+  const categoryProducts = products.filter((p) => p.categorySlug === slug);
+  const hideHeroBanner =
+    slug === "brand-new-xerox" ||
+    slug === "refurbished-machines" ||
+    slug === "printers" ||
+    slug === "laptops" ||
+    slug === "spare-parts";
+  const pageContainerClass = hideHeroBanner ? "container max-w-5xl" : "container";
 
   if (!category) {
     return (
@@ -24,7 +33,7 @@ const CategoryPage = () => {
     <div>
       {/* Breadcrumb */}
       <div className="bg-gray-50 border-b">
-        <div className="container py-3">
+        <div className={`${pageContainerClass} py-3`}>
           <div className="flex items-center gap-2 text-sm text-gray-500">
             <Link to="/" className="hover:text-green-600 transition-colors">Home</Link>
             <ChevronRight className="h-3.5 w-3.5" />
@@ -34,20 +43,22 @@ const CategoryPage = () => {
       </div>
 
       {/* Category hero */}
-      <section className="relative h-[250px] md:h-[300px] overflow-hidden">
-        <img src={category.image} alt={category.name} className="h-full w-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent" />
-        <div className="absolute inset-0 flex items-center">
-          <div className="container">
-            <h1 className="text-3xl md:text-4xl font-bold text-white drop-shadow">{category.name}</h1>
-            <p className="text-lg text-white/80 mt-2">{category.description}</p>
+      {!hideHeroBanner && (
+        <section className="relative h-[250px] md:h-[300px] overflow-hidden">
+          <img src={category.image} alt={category.name} className="h-full w-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent" />
+          <div className="absolute inset-0 flex items-center">
+            <div className="container">
+              <h1 className="text-3xl md:text-4xl font-bold text-white drop-shadow">{category.name}</h1>
+              <p className="text-lg text-white/80 mt-2">{category.description}</p>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Products grid */}
       <section className="py-12">
-        <div className="container">
+        <div className={pageContainerClass}>
           <div className="flex flex-col lg:flex-row gap-8">
             {/* Sidebar - Other categories */}
             <aside className="lg:w-64 shrink-0">
@@ -87,13 +98,13 @@ const CategoryPage = () => {
             {/* Products */}
             <div className="flex-1 max-w-4xl">
               <div className="flex items-center justify-between mb-6">
-                <p className="text-sm text-gray-500">{products.length} product{products.length !== 1 ? "s" : ""} found</p>
+                <p className="text-sm text-gray-500">{categoryProducts.length} product{categoryProducts.length !== 1 ? "s" : ""} found</p>
               </div>
-              {products.length > 0 ? (
+              {categoryProducts.length > 0 ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 justify-items-center">
-                  {products.map((p) => (
+                  {categoryProducts.map((p) => (
                     <div key={p.id} className="w-full max-w-sm">
-                      <ProductCard product={p} />
+                      <ProductCard product={p} compact={hideHeroBanner} />
                     </div>
                   ))}
                 </div>
