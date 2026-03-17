@@ -76,11 +76,29 @@ const Index = () => {
 
   return (
     <div>
-      <section className="relative h-[100svh] md:h-screen overflow-hidden">
-        <video autoPlay loop muted playsInline className="absolute inset-0 h-full w-full object-cover">
+      <section className="relative w-full min-h-[60vh] md:h-screen overflow-hidden">
+        <video 
+          autoPlay 
+          loop 
+          muted 
+          playsInline 
+          className="absolute inset-0 h-full w-full object-cover"
+        >
           <source src={heroVideo} type="video/mp4" />
         </video>
-        <div className="absolute inset-0 bg-black/50" />
+        <div className="absolute inset-0 bg-black/40 md:bg-black/50" />
+        
+        {/* Optional: Hero content overlay */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="text-center text-white px-4">
+            <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold mb-2 md:mb-4 drop-shadow-lg">
+              Welcome to Aram Digital Glow
+            </h1>
+            <p className="text-sm md:text-lg text-white/90 drop-shadow-md max-w-2xl mx-auto">
+              Your trusted partner for quality machines and professional services
+            </p>
+          </div>
+        </div>
       </section>
 
       <section className="py-10 md:py-16 bg-gray-50">
