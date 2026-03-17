@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Phone, Mail, MapPin } from "lucide-react";
+import { Phone } from "lucide-react";
 import logo from "@/assets/logo.png";
 
 const Footer = () => (
@@ -10,7 +10,7 @@ const Footer = () => (
       <div>
         <div className="flex items-center gap-2 mb-4">
           <img src={logo} alt="Aram Xerox" className="h-12 w-auto rounded-full" />
-          <span className="font-bold text-xl text-green-400">Aram Xerox</span>
+          <span className="font-bold text-xl text-green-400"> Xerox</span>
         </div>
         <p className="text-sm text-gray-400 leading-relaxed">
           Your trusted partner for xerox machines, printers, and laptop solutions across Tamil Nadu.
@@ -56,16 +56,36 @@ const Footer = () => (
         <h4 className="font-semibold text-green-400 mb-4 text-sm uppercase tracking-wider">Contact Us</h4>
         <ul className="space-y-3 text-sm text-gray-400">
           <li className="flex items-start gap-2">
-            <MapPin className="h-4 w-4 mt-0.5 text-green-500 shrink-0" />
-            <span>Old Bus Stand Opposite, Theni, Tamil Nadu</span>
+            <Phone className="h-4 w-4 text-green-500 shrink-0 mt-0.5" />
+            <div className="flex flex-col">
+              <span className="text-xs text-gray-500">Theni</span>
+              <a href="tel:+919092592925" className="hover:text-green-400 transition-colors">+91 9092592925</a>
+              <a href="mailto:info@aramxerox.com" className="hover:text-green-400 transition-colors text-xs">info@aramxerox.com</a>
+            </div>
           </li>
-          <li className="flex items-center gap-2">
-            <Phone className="h-4 w-4 text-green-500 shrink-0" />
-            <a href="tel:+919092592925" className="hover:text-green-400 transition-colors">+91 9092592925</a>
+          <li className="flex items-start gap-2">
+            <Phone className="h-4 w-4 text-green-500 shrink-0 mt-0.5" />
+            <div className="flex flex-col">
+              <span className="text-xs text-gray-500">Bodinayakanur</span>
+              <a href="tel:+919092425263" className="hover:text-green-400 transition-colors">+91 9092425263</a>
+              <a href="mailto:info@aramxerox.com" className="hover:text-green-400 transition-colors text-xs">info@aramxerox.com</a>
+            </div>
           </li>
-          <li className="flex items-center gap-2">
-            <Mail className="h-4 w-4 text-green-500 shrink-0" />
-            <a href="mailto:info@aramxerox.com" className="hover:text-green-400 transition-colors">info@aramxerox.com</a>
+          <li className="flex items-start gap-2">
+            <Phone className="h-4 w-4 text-green-500 shrink-0 mt-0.5" />
+            <div className="flex flex-col">
+              <span className="text-xs text-gray-500">Periyakulam</span>
+              <a href="tel:+919087777175" className="hover:text-green-400 transition-colors">+91 9087777175</a>
+              <a href="mailto:info@aramxerox.com" className="hover:text-green-400 transition-colors text-xs">info@aramxerox.com</a>
+            </div>
+          </li>
+          <li className="flex items-start gap-2">
+            <Phone className="h-4 w-4 text-green-500 shrink-0 mt-0.5" />
+            <div className="flex flex-col">
+              <span className="text-xs text-gray-500">Chinnamanur</span>
+              <a href="tel:+919543951545" className="hover:text-green-400 transition-colors">+91 9543951545</a>
+              <a href="mailto:info@aramxerox.com" className="hover:text-green-400 transition-colors text-xs">info@aramxerox.com</a>
+            </div>
           </li>
         </ul>
       </div>
@@ -74,8 +94,6 @@ const Footer = () => (
     {/* Bottom bar */}
     <div className="border-t border-gray-800">
       <div className="container py-4 flex flex-col sm:flex-row items-center justify-between text-xs text-gray-500 gap-2">
-        <span>&copy; {new Date().getFullYear()} Aram Xerox. All rights reserved.</span>
-        <span>Powered by Aram Digital</span>
       </div>
     </div>
   </footer>
