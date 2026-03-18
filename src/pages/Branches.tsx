@@ -1,12 +1,22 @@
 import { Link } from "react-router-dom";
-import { MapPin, Phone } from "lucide-react";
+import { MapPin, Phone, MessageCircle } from "lucide-react";
 import SectionTitle from "@/components/SectionTitle";
 import { useFirebaseData } from "@/hooks/useFirebaseData";
+import { useTwilioWhatsApp } from "@/hooks/useTwilioWhatsApp";
 import { Branch } from "@/data/branches";
 import styles from "@/components/BranchCard.module.css";
 
 const Branches = () => {
   const { data: branches, loading } = useFirebaseData<Branch>({ collectionName: 'branches' });
+  const { sendWhatsAppMessage } = useTwilioWhatsApp();
+
+  const handleSendWhatsApp = async (branch: Branch) => {
+    await sendWhatsAppMessage({
+      type: 'branch',
+      name: branch.name,
+      phone: branch.phone,
+    });
+  };
   
   if (loading) {
     return (
@@ -50,9 +60,18 @@ const Branches = () => {
                 <Phone className="h-5 w-5 text-accent" />
                 <span>{b.phone}</span>
               </div>
-              <Link to={`/branches/${b.slug}`} className={styles["branch-btn"]}>
-                <span className="branch-btn px-5 py-1.5 font-semibold">View Branch Details</span>
-              </Link>
+              <div className="flex gap-2 mt-3">
+                <Link to={`/branches/${b.slug}`} className={styles["branch-btn"]}>
+                  <span className="branch-btn px-5 py-1.5 font-semibold">View Details</span>
+                </Link>
+                <button
+                  onClick={() => handleSendWhatsApp(b)}
+                  className="flex-1 px-5 py-1.5 font-semibold bg-green-500 hover:bg-green-600 text-white rounded-lg flex items-center justify-center gap-2 transition-colors duration-200 hover:shadow-lg"
+                >
+                  <MessageCircle className="h-4 w-4" />
+                  Message
+                </button>
+              </div>
             </div>
           </div>
         ))}

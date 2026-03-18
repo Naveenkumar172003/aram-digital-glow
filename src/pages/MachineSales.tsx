@@ -1,6 +1,8 @@
-import { Printer, RefreshCw, Building2, Layers, Briefcase, Wrench } from "lucide-react";
+import { Printer, RefreshCw, Building2, Layers, Briefcase, Wrench, MessageCircle } from "lucide-react";
 import SectionTitle from "@/components/SectionTitle";
 import ServiceCard from "@/components/ServiceCard";
+import { useTwilioWhatsApp } from "@/hooks/useTwilioWhatsApp";
+import { Button } from "@/components/ui/button";
 
 const products = [
   { icon: Printer, title: "New Xerox Machines", desc: "Latest models from top brands", image: "https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?w=400&auto=format&fit=crop" },
@@ -11,19 +13,39 @@ const products = [
   { icon: Wrench, title: "Machine Spare Parts", desc: "Original spare parts for all major machine brands", image: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&auto=format&fit=crop" },
 ];
 
-const MachineSales = () => (
-  <div className="py-20">
-    <div className="container">
-      <SectionTitle title="Xerox Machine Sales" subtitle="Find the perfect printing solution for your needs" />
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {products.map((p, i) => (
-          <div key={p.title} className="h-[320px] animate-fade-up" style={{ animationDelay: `${i * 0.08}s` }}>
-            <ServiceCard icon={p.icon} title={p.title} description={p.desc} image={p.image} fullImage />
-          </div>
-        ))}
+const MachineSales = () => {
+  const { sendWhatsAppMessage } = useTwilioWhatsApp();
+
+  const handleProductInquiry = async (productName: string) => {
+    await sendWhatsAppMessage({
+      type: 'product',
+      name: productName,
+    });
+  };
+
+  return (
+    <div className="py-20">
+      <div className="container">
+        <SectionTitle title="Xerox Machine Sales" subtitle="Find the perfect printing solution for your needs" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {products.map((p, i) => (
+            <div key={p.title} className="h-[320px] animate-fade-up flex flex-col" style={{ animationDelay: `${i * 0.08}s` }}>
+              <div className="flex-1">
+                <ServiceCard icon={p.icon} title={p.title} description={p.desc} image={p.image} fullImage />
+              </div>
+              <Button
+                onClick={() => handleProductInquiry(p.title)}
+                className="mt-3 w-full bg-green-500 hover:bg-green-600 text-white flex items-center justify-center gap-2"
+              >
+                <MessageCircle className="h-4 w-4" />
+                Inquire on WhatsApp
+              </Button>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default MachineSales;
