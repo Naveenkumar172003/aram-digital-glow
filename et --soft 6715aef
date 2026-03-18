@@ -1,0 +1,20 @@
+[33m84414c6[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m add a whatsapp message system
+[33m605fb1c[m add a whatsapp message system
+[33m6715aef[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m  clear vercel error
+[33m90a19d3[m Update all user pages to fetch data from Firebase instead of localStorage
+[33m062d6b5[m Add Firebase environment variables template
+[33mdfcc302[m Add explicit Vite build configuration for SPA
+[33m217754a[m Add Vercel SPA routing configuration
+[33m61fa12c[m  add a firebase console
+[33m36bbece[m  correct the logo in mobile view
+[33m47eaafa[m  remove unwanted container
+[33mf079234[m  edit footer
+[33mee34d22[m  change to mobile response
+[33mb260882[m add admin page
+[33mf51a3a1[m  add new section
+[33m13effd4[m Updated Index page
+[33mda82bca[m  UI
+[33m73604bd[m  update
+[33mdaff1da[m add viode
+[33mb0eb11e[m first commit
+[33ma28633a[m  add folde r
