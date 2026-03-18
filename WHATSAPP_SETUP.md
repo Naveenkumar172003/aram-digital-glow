@@ -35,12 +35,14 @@ npm run dev:server
 
 ## ⚙️ Configuration
 
-Your `.env.local` already has everything needed:
+Your `.env.local` file should contain:
 ```
-VITE_TWILIO_ACCOUNT_SID=ACe55eee52424360951a1046c473f04d82
-VITE_TWILIO_AUTH_TOKEN=3e8d490ece86be5416ad1a7c9a5b066a
-VITE_TWILIO_PHONE_NUMBER=whatsapp:+17248355261
+VITE_TWILIO_ACCOUNT_SID=your_account_sid_here
+VITE_TWILIO_AUTH_TOKEN=your_auth_token_here
+VITE_TWILIO_PHONE_NUMBER=whatsapp:+your_twilio_number
 ```
+
+**Note:** Never commit `.env.local` to Git. Make sure it's in `.gitignore`
 
 ## 🧪 Testing
 
