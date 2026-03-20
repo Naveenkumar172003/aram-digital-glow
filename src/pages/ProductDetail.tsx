@@ -159,7 +159,7 @@ const ProductDetail = () => {
               {/* Action buttons */}
               <div className="mt-6 flex flex-col sm:flex-row gap-3">
                 <a
-                  href={`https://wa.me/919092592925?text=${encodeURIComponent(`Hi, I'm interested in ${product.name} (Qty: ${quantity}). Please share the price and availability.`)}`}
+                  href={`https://wa.me/916385449637?text=${encodeURIComponent(`Hi, I'm interested in ${product.name} (Qty: ${quantity}). Please share the price and availability.`)}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex-1"

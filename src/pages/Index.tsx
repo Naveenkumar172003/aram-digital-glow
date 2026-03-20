@@ -205,7 +205,7 @@ const Index = () => {
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4">
             <a
-              href="https://wa.me/919092592925?text=Hi, I'm interested in your machines"
+              href="https://wa.me/916385449637?text=Hi, I'm interested in your machines"
               target="_blank"
               rel="noopener noreferrer"
               className="w-full sm:w-auto"

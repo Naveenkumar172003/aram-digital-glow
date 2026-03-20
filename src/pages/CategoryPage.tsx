@@ -96,7 +96,7 @@ const CategoryPage = () => {
                 <h4 className="font-semibold text-green-800 text-sm mb-2">Need Help?</h4>
                 <p className="text-xs text-green-700 mb-3">Chat with us on WhatsApp for product enquiries</p>
                 <a
-                  href="https://wa.me/919092592925"
+                  href="https://wa.me/916385449637"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-center gap-1.5 py-2 rounded-lg bg-green-600 hover:bg-green-700 text-white text-sm font-medium transition-colors"
