@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import SectionTitle from "@/components/SectionTitle";
 import { useToast } from "@/hooks/use-toast";
-import { useTwilioWhatsApp } from "@/hooks/useTwilioWhatsApp";
 
 const branches = [
   { name: "Theni", address: "Old Bus Stand Opposite , Theni, Tamil Nadu", phone: "+91 9092592925", mapQuery: "Theni+Tamil+Nadu" },
@@ -19,20 +18,12 @@ const emptyForm = (): FormState => ({ name: "", email: "", message: "" });
 
 const BranchContactCard = ({ branch }: { branch: typeof branches[0] }) => {
   const { toast } = useToast();
-  const { sendWhatsAppMessage } = useTwilioWhatsApp();
   const [form, setForm] = useState<FormState>(emptyForm());
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     toast({ title: `Message sent to ${branch.name}!`, description: "We'll get back to you soon." });
     setForm(emptyForm());
-  };
-
-  const handleWhatsAppClick = async () => {
-    await sendWhatsAppMessage({
-      type: 'general',
-      name: `Inquiry from Contact Page for ${branch.name} branch`,
-    });
   };
 
   return (
@@ -81,14 +72,6 @@ const BranchContactCard = ({ branch }: { branch: typeof branches[0] }) => {
             <div className="flex gap-2">
               <Button type="submit" className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90">
                 Send Message
-              </Button>
-              <Button 
-                type="button"
-                onClick={handleWhatsAppClick}
-                className="flex-1 bg-green-500 hover:bg-green-600 text-white flex items-center justify-center gap-2"
-              >
-                <MessageCircle className="h-4 w-4" />
-                WhatsApp
               </Button>
             </div>
           </form>

@@ -1,7 +1,6 @@
 import { MessageCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import type { Product } from "@/data/products";
-import { useTwilioWhatsApp } from "@/hooks/useTwilioWhatsApp";
 import { Button } from "@/components/ui/button";
 
 interface ProductCardProps {
@@ -10,14 +9,12 @@ interface ProductCardProps {
 }
 
 const ProductCard = ({ product, compact = false }: ProductCardProps) => {
-  const { sendWhatsAppMessage } = useTwilioWhatsApp();
-
-  const handleEnquire = async (e: React.MouseEvent) => {
+  const handleEnquire = (e: React.MouseEvent) => {
     e.preventDefault();
-    await sendWhatsAppMessage({
-      type: 'product',
-      name: product.name,
-    });
+    // Redirect to WhatsApp with product inquiry
+    const message = `Hi! I'm interested in ${product.name}. Could you provide more information?`;
+    const phoneNumber = '916385449637';
+    window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, '_blank');
   };
 
   return (
