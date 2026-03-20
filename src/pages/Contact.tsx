@@ -13,8 +13,8 @@ const branches = [
   { name: "Chinnamanur", address: "Temple Road, Chinnamanur, Tamil Nadu", phone: "+91 9543951545", mapQuery: "Chinnamanur+Tamil+Nadu" },
 ];
 
-type FormState = { name: string; email: string; message: string };
-const emptyForm = (): FormState => ({ name: "", email: "", message: "" });
+type FormState = { name: string; mobile: string; message: string };
+const emptyForm = (): FormState => ({ name: "", mobile: "", message: "" });
 
 const BranchContactCard = ({ branch }: { branch: typeof branches[0] }) => {
   const { toast } = useToast();
@@ -22,7 +22,9 @@ const BranchContactCard = ({ branch }: { branch: typeof branches[0] }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    toast({ title: `Message sent to ${branch.name}!`, description: "We'll get back to you soon." });
+    const phoneNumber = '916385449637';
+    const message = `Branch: ${branch.name}\nName: ${form.name}\nMobile: ${form.mobile}\nMessage: ${form.message}`;
+    window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, '_blank');
     setForm(emptyForm());
   };
 
@@ -62,8 +64,8 @@ const BranchContactCard = ({ branch }: { branch: typeof branches[0] }) => {
               <Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Your name" required />
             </div>
             <div>
-              <label className="text-xs font-medium mb-1 block">Email</label>
-              <Input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="Your email" required />
+              <label className="text-xs font-medium mb-1 block">Mobile Number</label>
+              <Input type="tel" value={form.mobile} onChange={(e) => setForm({ ...form, mobile: e.target.value })} placeholder="Your mobile number" required />
             </div>
             <div>
               <label className="text-xs font-medium mb-1 block">Message</label>
