@@ -34,15 +34,17 @@ const Navbar = () => {
           : "sticky top-0 bg-white border-b border-green-100 shadow-sm"
       }`}
     >
-        <div className="container flex h-20 items-center justify-between">
+        <div className="container flex h-20 items-center justify-between px-0">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-0 font-bold text-xl shrink-0 mt-0 ml-0 lg:ml-0">
-            <img src={logo} alt="Aram Xerox Logo" className="h-16 w-auto object-contain ml-0" />
-            <div className="flex flex-col leading-tight ml-1">
-              <span className={`font-bold text-xl ${isHome ? "text-white" : "text-gradient"}`}>Xerox</span>
-              <span className={`text-xs ${isHome ? "text-white/70" : "text-gray-500"}`}>since 2010</span>
-            </div>
-          </Link>
+          <div className="flex items-center flex-shrink-0 mr-4 pl-0 lg:pl-0" style={{marginLeft: 0}}>
+            <Link to="/" className="flex items-center gap-0 font-bold text-xl shrink-0 mt-0">
+              <img src={logo} alt="Aram Xerox Logo" className="h-16 w-auto object-contain ml-0" />
+              <div className="flex flex-col leading-tight ml-1">
+                <span className={`font-bold text-xl ${isHome ? "text-white" : "text-gradient"}`}>Xerox</span>
+                <span className={`text-xs ${isHome ? "text-white/70" : "text-gray-500"}`}>since 2010</span>
+              </div>
+            </Link>
+          </div>
 
           {/* Desktop nav */}
           <div className="hidden lg:flex items-center gap-0.5">
