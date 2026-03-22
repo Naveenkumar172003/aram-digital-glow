@@ -36,9 +36,9 @@ const Navbar = () => {
     >
         <div className="container flex h-20 items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-0 font-bold text-xl shrink-0 mt-0">
-            <img src={logo} alt="Aram Xerox Logo" className="h-20 w-auto object-contain" />
-            <div className="flex flex-col leading-tight">
+          <Link to="/" className="flex items-center gap-0 font-bold text-xl shrink-0 mt-0 ml-0 lg:ml-0">
+            <img src={logo} alt="Aram Xerox Logo" className="h-16 w-auto object-contain ml-0" />
+            <div className="flex flex-col leading-tight ml-1">
               <span className={`font-bold text-xl ${isHome ? "text-white" : "text-gradient"}`}>Xerox</span>
               <span className={`text-xs ${isHome ? "text-white/70" : "text-gray-500"}`}>since 2010</span>
             </div>
