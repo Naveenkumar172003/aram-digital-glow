@@ -18,6 +18,7 @@ import ProductDetail from "./pages/ProductDetail";
 import NotFound from "./pages/NotFound";
 import AdminPanel from "./pages/AdminPanel";
 import AdminLogin from "./pages/AdminLogin";
+import { Navigate } from "react-router-dom";
 import MigrateData from "./pages/MigrateData";
 
 const queryClient = new QueryClient();
@@ -43,8 +44,9 @@ const App = () => (
             <Route path="/contact" element={<Contact />} />
           </Route>
           <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin/panel" element={<AdminPanel />} />
           <Route path="/admin/migrate" element={<MigrateData />} />
-          <Route path="/admin" element={<AdminPanel />} />
+          <Route path="/admin" element={<Navigate to="/admin/login" replace />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

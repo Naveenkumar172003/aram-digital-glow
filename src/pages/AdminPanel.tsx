@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { LogOut, RotateCcw } from 'lucide-react';
 import { useFirebaseAuth } from '@/hooks/useFirebaseAuth';
 import { useAdminStore } from '@/hooks/useAdminStore';
+import AdminServices from '@/pages/AdminServices';
 import AdminBranches from '@/pages/AdminBranches';
 import AdminCategories from '@/pages/AdminCategories';
 import AdminProducts from '@/pages/AdminProducts';
@@ -11,11 +12,11 @@ const AdminPanel = () => {
   const navigate = useNavigate();
   const { user, loading, logout: firebaseLogout } = useFirebaseAuth();
   const { resetToDefaults } = useAdminStore();
-  const [activeTab, setActiveTab] = useState<'branches' | 'categories' | 'products'>('branches');
+  const [activeTab, setActiveTab] = useState<'services' | 'branches' | 'categories' | 'products'>('services');
 
   // If not authenticated and not loading, redirect to login
   if (!loading && !user) {
-    navigate('/admin/login');
+    navigate('/admin/login', { replace: true });
     return null;
   }
 
@@ -64,7 +65,7 @@ const AdminPanel = () => {
       {/* Tabs */}
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="flex gap-4 mb-8 border-b">
-          {(['branches', 'categories', 'products'] as const).map((tab) => (
+          {(['services', 'branches', 'categories', 'products'] as const).map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -81,6 +82,7 @@ const AdminPanel = () => {
 
         {/* Tab Content */}
         <div>
+          {activeTab === 'services' && <AdminServices />}
           {activeTab === 'branches' && <AdminBranches />}
           {activeTab === 'categories' && <AdminCategories />}
           {activeTab === 'products' && <AdminProducts />}

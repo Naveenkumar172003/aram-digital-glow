@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Edit2, Check, X, Upload } from 'lucide-react';
+import { Edit2, Check, X, Upload, Trash2 } from 'lucide-react';
 import { useFirebaseData } from '@/hooks/useFirebaseData';
 import { Branch } from '@/data/branches';
 
@@ -13,9 +13,51 @@ const convertImageToBase64 = (file: File): Promise<string> => {
 };
 
 const AdminBranches = () => {
-  const { data: branches, loading, update: updateBranch } = useFirebaseData<Branch>({ collectionName: 'branches' });
+  const { data: branches, loading, update: updateBranch, add: addBranch, delete: deleteBranch } = useFirebaseData<Branch>({ collectionName: 'branches' });
+    const handleDelete = async (id: string) => {
+      if (window.confirm('Are you sure you want to delete this branch?')) {
+        try {
+          await deleteBranch(id);
+        } catch (error) {
+          alert('Failed to delete branch.');
+        }
+      }
+    };
   const [editingId, setEditingId] = useState<string | null>(null);
   const [formData, setFormData] = useState<Partial<Branch>>({});
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [addForm, setAddForm] = useState<Partial<Branch>>({ name: '', address: '', phone: '', image: '' });
+  const [addLoading, setAddLoading] = useState(false);
+  const [addError, setAddError] = useState<string | null>(null);
+  const handleAddBranch = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setAddError(null);
+    if (!addForm.name || !addForm.address || !addForm.phone) {
+      setAddError('Name, address, and phone are required.');
+      return;
+    }
+    setAddLoading(true);
+    try {
+      await addBranch(addForm as Branch);
+      setAddForm({ name: '', address: '', phone: '', image: '' });
+      setShowAddForm(false);
+    } catch (error) {
+      setAddError('Failed to add branch.');
+    }
+    setAddLoading(false);
+  };
+
+  const handleAddImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      try {
+        const base64 = await convertImageToBase64(file);
+        setAddForm({ ...addForm, image: base64 });
+      } catch (error) {
+        setAddError('Error uploading image.');
+      }
+    }
+  };
 
   const handleEdit = (branch: Branch) => {
     setEditingId(branch.id);
@@ -55,7 +97,91 @@ const AdminBranches = () => {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold mb-6 text-gray-900">Manage Branches</h2>
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-2xl font-bold text-gray-900">Manage Branches</h2>
+        <button
+          className="bg-green-600 hover:bg-green-700 text-white font-semibold px-5 py-2 rounded-lg transition-colors text-base flex items-center"
+          onClick={() => setShowAddForm((v) => !v)}
+        >
+          <span className="mr-2 text-xl">+</span> Add Branch
+        </button>
+      </div>
+
+      {showAddForm && (
+        <form onSubmit={handleAddBranch} className="bg-white rounded-lg shadow p-6 mb-6">
+          <h3 className="text-xl font-semibold mb-4 text-gray-900">Add New Branch</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium mb-1">Branch Name</label>
+              <input
+                className="w-full border rounded px-3 py-2 mb-2"
+                type="text"
+                value={addForm.name || ''}
+                onChange={e => setAddForm({ ...addForm, name: e.target.value })}
+                required
+                placeholder="Branch name"
+                disabled={addLoading}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Address</label>
+              <input
+                className="w-full border rounded px-3 py-2 mb-2"
+                type="text"
+                value={addForm.address || ''}
+                onChange={e => setAddForm({ ...addForm, address: e.target.value })}
+                required
+                placeholder="Address"
+                disabled={addLoading}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Phone</label>
+              <input
+                className="w-full border rounded px-3 py-2 mb-2"
+                type="text"
+                value={addForm.phone || ''}
+                onChange={e => setAddForm({ ...addForm, phone: e.target.value })}
+                required
+                placeholder="Phone"
+                disabled={addLoading}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Branch Image</label>
+              <input
+                className="w-full border rounded px-3 py-2"
+                type="file"
+                accept="image/*"
+                onChange={handleAddImageUpload}
+                disabled={addLoading}
+              />
+              {addForm.image && (
+                <img src={addForm.image as string} alt="Preview" className="mt-2 h-20 rounded shadow" />
+              )}
+            </div>
+          </div>
+          <div className="flex gap-2 mt-4">
+            <button
+              type="submit"
+              className="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-2 rounded-lg flex items-center"
+              disabled={addLoading}
+            >
+              ✓ Add Branch
+            </button>
+            <button
+              type="button"
+              className="bg-gray-500 hover:bg-gray-600 text-white font-semibold px-6 py-2 rounded-lg flex items-center"
+              onClick={() => { setShowAddForm(false); setAddForm({ name: '', address: '', phone: '', image: '' }); setAddError(null); }}
+              disabled={addLoading}
+            >
+              ✗ Cancel
+            </button>
+          </div>
+          {addError && <div className="text-red-600 mt-2">{addError}</div>}
+        </form>
+      )}
+
       <div className="space-y-4">
         {branches.map((branch) => (
           <div key={branch.id} className="bg-white rounded-lg shadow p-6">
@@ -164,12 +290,21 @@ const AdminBranches = () => {
                     <span className="font-medium">Phone:</span> {branch.phone}
                   </p>
                 </div>
-                <button
-                  onClick={() => handleEdit(branch)}
-                  className="flex items-center gap-1 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
-                >
-                  <Edit2 className="h-4 w-4" /> Edit
-                </button>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => handleEdit(branch)}
+                    className="flex items-center gap-1 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+                  >
+                    <Edit2 className="h-4 w-4" /> Edit
+                  </button>
+                  <button
+                    onClick={() => handleDelete(branch.id)}
+                    className="flex items-center gap-1 px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
+                    title="Delete Branch"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
               </div>
             )}
           </div>

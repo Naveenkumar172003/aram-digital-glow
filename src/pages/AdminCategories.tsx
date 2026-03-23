@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Edit2, Check, X, Upload } from 'lucide-react';
+import { Edit2, Check, X, Upload, Trash2 } from 'lucide-react';
 import { useFirebaseData } from '@/hooks/useFirebaseData';
 import { Category } from '@/data/products';
 
@@ -12,10 +12,54 @@ const convertImageToBase64 = (file: File): Promise<string> => {
   });
 };
 
+
 const AdminCategories = () => {
-  const { data: categories, loading, update: updateCategory } = useFirebaseData<Category>({ collectionName: 'categories' });
+  const { data: categories, loading, update: updateCategory, add: addCategory, delete: deleteCategory } = useFirebaseData<Category>({ collectionName: 'categories' });
+
+  const handleDelete = async (id: string) => {
+    if (window.confirm('Are you sure you want to delete this category?')) {
+      try {
+        await deleteCategory(id);
+      } catch (error) {
+        alert('Failed to delete category.');
+      }
+    }
+  };
   const [editingId, setEditingId] = useState<string | null>(null);
   const [formData, setFormData] = useState<Partial<Category>>({});
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [addForm, setAddForm] = useState<Partial<Category>>({ name: '', description: '', image: '' });
+  const [addLoading, setAddLoading] = useState(false);
+  const [addError, setAddError] = useState<string | null>(null);
+  const handleAddCategory = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setAddError(null);
+    if (!addForm.name || !addForm.description) {
+      setAddError('Name and description are required.');
+      return;
+    }
+    setAddLoading(true);
+    try {
+      await addCategory(addForm as Category);
+      setAddForm({ name: '', description: '', image: '' });
+      setShowAddForm(false);
+    } catch (error) {
+      setAddError('Failed to add category.');
+    }
+    setAddLoading(false);
+  };
+
+  const handleAddImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      try {
+        const base64 = await convertImageToBase64(file);
+        setAddForm({ ...addForm, image: base64 });
+      } catch (error) {
+        setAddError('Error uploading image.');
+      }
+    }
+  };
 
   const handleEdit = (category: Category) => {
     setEditingId(category.id);
@@ -55,7 +99,81 @@ const AdminCategories = () => {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold mb-6 text-gray-900">Manage Categories</h2>
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-2xl font-bold text-gray-900">Manage Categories</h2>
+        <button
+          className="bg-green-600 hover:bg-green-700 text-white font-semibold px-5 py-2 rounded-lg transition-colors text-base flex items-center"
+          onClick={() => setShowAddForm((v) => !v)}
+        >
+          <span className="mr-2 text-xl">+</span> Add Category
+        </button>
+      </div>
+
+      {showAddForm && (
+        <form onSubmit={handleAddCategory} className="bg-white rounded-lg shadow p-6 mb-6">
+          <h3 className="text-xl font-semibold mb-4 text-gray-900">Add New Category</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium mb-1">Category Name</label>
+              <input
+                className="w-full border rounded px-3 py-2 mb-2"
+                type="text"
+                value={addForm.name || ''}
+                onChange={e => setAddForm({ ...addForm, name: e.target.value })}
+                required
+                placeholder="Category name"
+                disabled={addLoading}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Description</label>
+              <input
+                className="w-full border rounded px-3 py-2 mb-2"
+                type="text"
+                value={addForm.description || ''}
+                onChange={e => setAddForm({ ...addForm, description: e.target.value })}
+                required
+                placeholder="Description"
+                disabled={addLoading}
+              />
+            </div>
+          </div>
+          <div className="mt-4 flex flex-col md:flex-row md:items-end gap-4">
+            <div className="flex-1">
+              <label className="block text-sm font-medium mb-1">Category Image</label>
+              <input
+                className="w-full border rounded px-3 py-2"
+                type="file"
+                accept="image/*"
+                onChange={handleAddImageUpload}
+                disabled={addLoading}
+              />
+              {addForm.image && (
+                <img src={addForm.image as string} alt="Preview" className="mt-2 h-20 rounded shadow" />
+              )}
+            </div>
+            <div className="flex gap-2 mt-4 md:mt-0">
+              <button
+                type="submit"
+                className="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-2 rounded-lg flex items-center"
+                disabled={addLoading}
+              >
+                ✓ Add Category
+              </button>
+              <button
+                type="button"
+                className="bg-gray-500 hover:bg-gray-600 text-white font-semibold px-6 py-2 rounded-lg flex items-center"
+                onClick={() => { setShowAddForm(false); setAddForm({ name: '', description: '', image: '' }); setAddError(null); }}
+                disabled={addLoading}
+              >
+                ✗ Cancel
+              </button>
+            </div>
+          </div>
+          {addError && <div className="text-red-600 mt-2">{addError}</div>}
+        </form>
+      )}
+
       <div className="space-y-4">
         {categories.map((category) => (
           <div key={category.id} className="bg-white rounded-lg shadow p-6">
@@ -144,12 +262,21 @@ const AdminCategories = () => {
                     />
                   )}
                 </div>
-                <button
-                  onClick={() => handleEdit(category)}
-                  className="flex items-center gap-1 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
-                >
-                  <Edit2 className="h-4 w-4" /> Edit
-                </button>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => handleEdit(category)}
+                    className="flex items-center gap-1 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+                  >
+                    <Edit2 className="h-4 w-4" /> Edit
+                  </button>
+                  <button
+                    onClick={() => handleDelete(category.id)}
+                    className="flex items-center gap-1 px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
+                    title="Delete Category"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
               </div>
             )}
           </div>

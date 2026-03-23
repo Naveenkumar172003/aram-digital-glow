@@ -24,7 +24,7 @@ export default function AdminLogin() {
     try {
       const success = await signIn(email, password);
       if (success) {
-        navigate('/admin');
+        navigate('/admin/panel');
       }
     } catch (err) {
       setLocalError('Login failed. Please try again.');

@@ -36,35 +36,54 @@ export const useFirebaseData = <T extends { id?: string }>({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const collectionRef = collection(db, collectionName);
-
-  // Real-time listener
+  // Real-time listener with Firestore rules compliance
   useEffect(() => {
-    try {
-      setLoading(true);
-      const q = query(collectionRef, ...queryConstraints);
+    let unsubscribe: (() => void) | null = null;
 
-      const unsubscribe = onSnapshot(q, (snapshot) => {
-        const docs = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        })) as T[];
-        setData(docs);
-        setError(null);
-      });
+    const setupListener = async () => {
+      try {
+        const collectionRef = collection(db, collectionName);
+        const q = query(collectionRef, ...queryConstraints);
 
-      setLoading(false);
-      return unsubscribe;
-    } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message);
+        unsubscribe = onSnapshot(
+          q,
+          (snapshot) => {
+            const docs = snapshot.docs.map((doc) => ({
+              id: doc.id,
+              ...doc.data(),
+            })) as T[];
+            console.log(`Loaded ${docs.length} items from '${collectionName}' collection`);
+            setData(docs);
+            setError(null);
+            setLoading(false);
+          },
+          (error: any) => {
+            console.error(`Firebase listener error for '${collectionName}':`, error);
+            setError(error.message || "Failed to load data");
+            setLoading(false);
+          }
+        );
+      } catch (err) {
+        console.error(`Error setting up listener for '${collectionName}':`, err);
+        if (err instanceof Error) {
+          setError(err.message);
+        }
+        setLoading(false);
       }
-      setLoading(false);
-    }
+    };
+
+    setupListener();
+
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
   }, [collectionName]);
 
   const add = async (newData: T): Promise<string> => {
     try {
+      const collectionRef = collection(db, collectionName);
       const docRef = await addDoc(collectionRef, newData);
       return docRef.id;
     } catch (err) {
@@ -79,7 +98,7 @@ export const useFirebaseData = <T extends { id?: string }>({
   const update = async (id: string, updatedData: Partial<T>) => {
     try {
       const docRef = doc(db, collectionName, id);
-      await updateDoc(docRef, updatedData);
+      await updateDoc(docRef as any, updatedData as any);
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
@@ -105,6 +124,7 @@ export const useFirebaseData = <T extends { id?: string }>({
   const refetch = async () => {
     try {
       setLoading(true);
+      const collectionRef = collection(db, collectionName);
       const q = query(collectionRef, ...queryConstraints);
       const snapshot = await getDocs(q);
       const docs = snapshot.docs.map((doc) => ({
