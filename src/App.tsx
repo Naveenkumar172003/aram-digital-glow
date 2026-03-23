@@ -19,6 +19,7 @@ import ProductDetail from "./pages/ProductDetail";
 import NotFound from "./pages/NotFound";
 import AdminPanel from "./pages/AdminPanel";
 import AdminLogin from "./pages/AdminLogin";
+import AdminContact from "./pages/AdminContact";
 import { Navigate } from "react-router-dom";
 import MigrateData from "./pages/MigrateData";
 
@@ -50,6 +51,14 @@ const App = () => (
             element={
               <ProtectedRoute>
                 <AdminPanel />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/admin/contact" 
+            element={
+              <ProtectedRoute>
+                <AdminContact />
               </ProtectedRoute>
             } 
           />

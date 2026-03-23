@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Edit2, Check, X, Upload, Trash2 } from 'lucide-react';
 import { useFirebaseData } from '@/hooks/useFirebaseData';
-import { Branch } from '@/data/branches';
+import { Branch, BranchService } from '@/data/branches';
 
 const convertImageToBase64 = (file: File): Promise<string> => {
   return new Promise((resolve, reject) => {
@@ -264,6 +264,90 @@ const AdminBranches = () => {
                     </div>
                   </div>
                 </div>
+
+                {/* Services Management */}
+                <div className="border-t pt-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-3">
+                    Services Available at This Branch
+                  </label>
+                  <div className="space-y-2 mb-3">
+                    {(formData.services || []).map((service, idx) => (
+                      <div key={idx} className="bg-gray-50 p-3 rounded-lg border border-gray-200">
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-2 mb-2">
+                          <div>
+                            <label className="text-xs font-medium text-gray-600">Service Name</label>
+                            <input
+                              type="text"
+                              placeholder="Service name"
+                              value={service.title || ''}
+                              onChange={(e) => {
+                                const updatedServices = [...(formData.services || [])];
+                                updatedServices[idx] = { ...updatedServices[idx], title: e.target.value };
+                                setFormData({ ...formData, services: updatedServices });
+                              }}
+                              className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+                            />
+                          </div>
+                          <div>
+                            <label className="text-xs font-medium text-gray-600">Icon</label>
+                            <select
+                              value={service.icon || 'Printer'}
+                              onChange={(e) => {
+                                const updatedServices = [...(formData.services || [])];
+                                updatedServices[idx] = { ...updatedServices[idx], icon: e.target.value };
+                                setFormData({ ...formData, services: updatedServices });
+                              }}
+                              className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+                            >
+                              <option value="Printer">Printer</option>
+                              <option value="BookOpen">Book Binding</option>
+                              <option value="Palette">Color Printing</option>
+                              <option value="ScanLine">Scanning</option>
+                              <option value="Copy">Copy</option>
+                              <option value="FileText">Document</option>
+                              <option value="Image">Photo</option>
+                            </select>
+                          </div>
+                          <div className="md:col-span-2">
+                            <label className="text-xs font-medium text-gray-600">Description</label>
+                            <input
+                              type="text"
+                              placeholder="Description"
+                              value={service.desc || ''}
+                              onChange={(e) => {
+                                const updatedServices = [...(formData.services || [])];
+                                updatedServices[idx] = { ...updatedServices[idx], desc: e.target.value };
+                                setFormData({ ...formData, services: updatedServices });
+                              }}
+                              className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+                            />
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updatedServices = formData.services?.filter((_, i) => i !== idx) || [];
+                            setFormData({ ...formData, services: updatedServices });
+                          }}
+                          className="px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded text-sm"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const newServices = [...(formData.services || []), { title: '', desc: '', icon: 'Printer' }];
+                      setFormData({ ...formData, services: newServices });
+                    }}
+                    className="text-sm px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+                  >
+                    + Add Service
+                  </button>
+                </div>
+
                 <div className="flex gap-2">
                   <button
                     onClick={() => handleSave(branch.id)}
@@ -299,7 +383,7 @@ const AdminBranches = () => {
                   </button>
                   <button
                     onClick={() => handleDelete(branch.id)}
-                    className="flex items-center gap-1 px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
+                    className="p-1 text-red-600 hover:bg-red-100 rounded transition-colors"
                     title="Delete Branch"
                   >
                     <Trash2 className="h-4 w-4" />

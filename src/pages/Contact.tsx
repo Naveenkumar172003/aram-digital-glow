@@ -5,8 +5,10 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import SectionTitle from "@/components/SectionTitle";
 import { useToast } from "@/hooks/use-toast";
+import { useFirebaseData } from "@/hooks/useFirebaseData";
+import { Branch } from "@/data/branches";
 
-const branches = [
+const defaultBranches = [
   { name: "Theni", address: "Old Bus Stand Opposite , Theni, Tamil Nadu", phone: "+91 9092592925", mapQuery: "Theni+Tamil+Nadu" },
   { name: "Bodinayakanur (Bodi)", address: "P.H. Road, Bodinayakanur, Tamil Nadu", phone: "+91 9092425263", mapQuery: "Bodinayakanur+Tamil+Nadu" },
   { name: "Periyakulam", address: "Moondranthal, Periyakulam, Tamil Nadu", phone: "+91 9087777175", mapQuery: "Periyakulam+Tamil+Nadu" },
@@ -16,7 +18,16 @@ const branches = [
 type FormState = { name: string; mobile: string; message: string };
 const emptyForm = (): FormState => ({ name: "", mobile: "", message: "" });
 
-const BranchContactCard = ({ branch }: { branch: typeof branches[0] }) => {
+type BranchContactType = {
+  name: string;
+  address: string;
+  phone: string;
+  mapQuery: string;
+  latitude?: number;
+  longitude?: number;
+};
+
+const BranchContactCard = ({ branch }: { branch: BranchContactType }) => {
   const { toast } = useToast();
   const [form, setForm] = useState<FormState>(emptyForm());
 
@@ -48,7 +59,11 @@ const BranchContactCard = ({ branch }: { branch: typeof branches[0] }) => {
         <div className="h-[220px] lg:h-auto min-h-[220px]">
           <iframe
             title={`Map of ${branch.name}`}
-            src={`https://www.google.com/maps?q=${branch.mapQuery}&output=embed`}
+            src={`https://www.google.com/maps?q=${
+              branch.latitude && branch.longitude
+                ? `${branch.latitude},${branch.longitude}`
+                : branch.mapQuery
+            }&output=embed`}
             className="w-full h-full"
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
@@ -83,20 +98,25 @@ const BranchContactCard = ({ branch }: { branch: typeof branches[0] }) => {
   );
 };
 
-const Contact = () => (
-  <div className="py-20">
-    <div className="container">
-      <SectionTitle title="Contact Us" subtitle="Reach out to any of our four branches" />
+const Contact = () => {
+  const { data: firebaseBranches, loading } = useFirebaseData<Branch>({ collectionName: 'branches' });
+  const branchesToDisplay = firebaseBranches && firebaseBranches.length > 0 ? firebaseBranches : defaultBranches;
 
-      {/* Four branch containers */}
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-        {branches.map((b) => (
-          <BranchContactCard key={b.name} branch={b} />
-        ))}
+  return (
+    <div className="py-20">
+      <div className="container">
+        <SectionTitle title="Contact Us" subtitle={loading ? "Loading contact information..." : "Reach out to any of our branches"} />
+
+        {/* Four branch containers */}
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+          {branchesToDisplay.map((b) => (
+            <BranchContactCard key={b.name} branch={b} />
+          ))}
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default Contact;
 

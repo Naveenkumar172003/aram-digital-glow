@@ -1,3 +1,9 @@
+export type BranchService = {
+  title: string;
+  desc: string;
+  icon?: string;
+};
+
 export type Branch = {
   name: string;
   slug: string;
@@ -6,6 +12,9 @@ export type Branch = {
   phone: string;
   mapQuery: string;
   image: string;
+  latitude?: number;
+  longitude?: number;
+  services?: BranchService[];
 };
 
 export const branches: Branch[] = [

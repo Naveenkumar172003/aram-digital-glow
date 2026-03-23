@@ -1,20 +1,33 @@
 import { useParams, Link } from "react-router-dom";
-import { MapPin, Phone, Copy, Palette, Printer, BookOpen, ScanLine, Image, FileText, ArrowLeft } from "lucide-react";
+import { MapPin, Phone, Copy, Palette, Printer, BookOpen, ScanLine, Image as ImageIcon, FileText, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import SectionTitle from "@/components/SectionTitle";
 import ServiceCard from "@/components/ServiceCard";
 import { useFirebaseData } from "@/hooks/useFirebaseData";
-import { Branch } from "@/data/branches";
+import { Branch, BranchService } from "@/data/branches";
 
-const services = [
-  { icon: Copy, title: "A4 Xerox", desc: "Fast A4 copies" },
-  { icon: FileText, title: "A3 Xerox", desc: "Large format copies" },
-  { icon: Palette, title: "Color Printing", desc: "Vivid prints" },
-  { icon: Printer, title: "B&W Printing", desc: "Sharp prints" },
-  { icon: BookOpen, title: "Spiral Binding", desc: "Professional binding" },
-  { icon: ScanLine, title: "Scanning", desc: "Digital scanning" },
-  { icon: Image, title: "Photo Printing", desc: "Photo prints" },
+const defaultServices: BranchService[] = [
+  { title: "A4 Xerox", desc: "Fast A4 copies" },
+  { title: "A3 Xerox", desc: "Large format copies" },
+  { title: "Color Printing", desc: "Vivid prints" },
+  { title: "B&W Printing", desc: "Sharp prints" },
+  { title: "Spiral Binding", desc: "Professional binding" },
+  { title: "Scanning", desc: "Digital scanning" },
+  { title: "Photo Printing", desc: "Photo prints" },
 ];
+
+const getServiceIcon = (title: string) => {
+  const iconMap: Record<string, any> = {
+    'A4 Xerox': Copy,
+    'A3 Xerox': Copy,
+    'Color Printing': Palette,
+    'B&W Printing': Printer,
+    'Spiral Binding': BookOpen,
+    'Scanning': ScanLine,
+    'Photo Printing': ImageIcon,
+  };
+  return iconMap[title] || Copy;
+};
 
 const BranchDetail = () => {
   const { slug } = useParams();
@@ -70,8 +83,13 @@ const BranchDetail = () => {
 
         <SectionTitle title="Services Available" subtitle={`Services offered at our ${branch.name} branch`} />
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {services.map((s) => (
-            <ServiceCard key={s.title} icon={s.icon} title={s.title} description={s.desc} />
+          {(branch.services || defaultServices).map((s) => (
+            <ServiceCard 
+              key={s.title} 
+              icon={getServiceIcon(s.icon || s.title)} 
+              title={s.title} 
+              description={s.desc} 
+            />
           ))}
         </div>
       </div>

@@ -7,12 +7,13 @@ import AdminServices from '@/pages/AdminServices';
 import AdminBranches from '@/pages/AdminBranches';
 import AdminCategories from '@/pages/AdminCategories';
 import AdminProducts from '@/pages/AdminProducts';
+import AdminContact from '@/pages/AdminContact';
 
 const AdminPanel = () => {
   const navigate = useNavigate();
   const { user, loading, logout: firebaseLogout } = useFirebaseAuth();
   const { resetToDefaults } = useAdminStore();
-  const [activeTab, setActiveTab] = useState<'services' | 'branches' | 'categories' | 'products'>('services');
+  const [activeTab, setActiveTab] = useState<'services' | 'branches' | 'categories' | 'products' | 'contact'>('services');
 
   // If not authenticated and not loading, redirect to login
   if (!loading && !user) {
@@ -65,7 +66,7 @@ const AdminPanel = () => {
       {/* Tabs */}
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="flex gap-4 mb-8 border-b">
-          {(['services', 'branches', 'categories', 'products'] as const).map((tab) => (
+          {(['services', 'branches', 'categories', 'products', 'contact'] as const).map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -75,7 +76,7 @@ const AdminPanel = () => {
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >
-              {tab}
+              {tab === 'contact' ? 'Contact Info' : tab}
             </button>
           ))}
         </div>
@@ -86,6 +87,7 @@ const AdminPanel = () => {
           {activeTab === 'branches' && <AdminBranches />}
           {activeTab === 'categories' && <AdminCategories />}
           {activeTab === 'products' && <AdminProducts />}
+          {activeTab === 'contact' && <AdminContact />}
         </div>
       </div>
     </div>

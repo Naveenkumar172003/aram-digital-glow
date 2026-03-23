@@ -271,7 +271,7 @@ const AdminCategories = () => {
                   </button>
                   <button
                     onClick={() => handleDelete(category.id)}
-                    className="flex items-center gap-1 px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
+                    className="p-1 text-red-600 hover:bg-red-100 rounded transition-colors"
                     title="Delete Category"
                   >
                     <Trash2 className="h-4 w-4" />
