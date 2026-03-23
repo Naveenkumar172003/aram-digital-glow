@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "./components/Layout";
+import ProtectedRoute from "./components/ProtectedRoute";
 import Index from "./pages/Index";
 import Branches from "./pages/Branches";
 import BranchDetail from "./pages/BranchDetail";
@@ -44,7 +45,14 @@ const App = () => (
             <Route path="/contact" element={<Contact />} />
           </Route>
           <Route path="/admin/login" element={<AdminLogin />} />
-          <Route path="/admin/panel" element={<AdminPanel />} />
+          <Route 
+            path="/admin/panel" 
+            element={
+              <ProtectedRoute>
+                <AdminPanel />
+              </ProtectedRoute>
+            } 
+          />
           <Route path="/admin/migrate" element={<MigrateData />} />
           <Route path="/admin" element={<Navigate to="/admin/login" replace />} />
           <Route path="*" element={<NotFound />} />
