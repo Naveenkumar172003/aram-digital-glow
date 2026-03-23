@@ -11,7 +11,7 @@ const Footer = () => (
         <div className="flex items-center gap-2 mb-4">
           <img src={logo} alt="Aram Xerox" className="h-12 w-auto rounded-full" />
           <div className="flex flex-col">
-            <span className="font-bold text-xl text-green-400">Xerox</span>
+            <span className="font-bold text-xl text-gradient">Xerox</span>
             <span className="text-xs text-gray-500">since 2010</span>
           </div>
         </div>
