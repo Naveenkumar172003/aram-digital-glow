@@ -23,6 +23,7 @@ const AdminProducts = () => {
   const handleEdit = (product: Product) => {
     setEditingId(product.id);
     setFormData(product);
+    setNewSpec({});
     setShowAddForm(false);
   };
 
@@ -202,7 +203,67 @@ const AdminProducts = () => {
               </div>
             </div>
 
-            <div className="flex gap-2">
+            {/* Specifications */}
+            <div className="border-t pt-4">
+              <h4 className="font-semibold text-gray-900 mb-3">Product Specifications</h4>
+              <div className="space-y-3">
+                {/* Existing specs */}
+                {(formData.specs || []).map((spec, index) => (
+                  <div key={index} className="flex gap-2 items-end">
+                    <div className="flex-1 grid grid-cols-2 gap-2">
+                      <input
+                        type="text"
+                        placeholder="Label (e.g., Type, Engine Speed)"
+                        value={spec.label || ''}
+                        readOnly
+                        className="px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-600"
+                      />
+                      <input
+                        type="text"
+                        placeholder="Value"
+                        value={spec.value || ''}
+                        readOnly
+                        className="px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-600"
+                      />
+                    </div>
+                    <button
+                      onClick={() => removeSpec(index)}
+                      className="px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
+                ))}
+                
+                {/* Add new spec */}
+                <div className="flex gap-2 items-end">
+                  <div className="flex-1 grid grid-cols-2 gap-2">
+                    <input
+                      type="text"
+                      placeholder="Label (e.g., Type, Engine Speed)"
+                      value={newSpec.label || ''}
+                      onChange={(e) => setNewSpec({ ...newSpec, label: e.target.value })}
+                      className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Value"
+                      value={newSpec.value || ''}
+                      onChange={(e) => setNewSpec({ ...newSpec, value: e.target.value })}
+                      className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                    />
+                  </div>
+                  <button
+                    onClick={addSpecField}
+                    className="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors flex items-center gap-1"
+                  >
+                    <Plus className="h-4 w-4" /> Add
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-2 pt-4">
               <button
                 onClick={handleAddProduct}
                 className="flex items-center gap-1 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors"
@@ -307,7 +368,67 @@ const AdminProducts = () => {
                   </div>
                 </div>
 
-                <div className="flex gap-2">
+                {/* Specifications */}
+                <div className="border-t pt-4">
+                  <h4 className="font-semibold text-gray-900 mb-3">Product Specifications</h4>
+                  <div className="space-y-3">
+                    {/* Existing specs */}
+                    {(formData.specs || []).map((spec, index) => (
+                      <div key={index} className="flex gap-2 items-end">
+                        <div className="flex-1 grid grid-cols-2 gap-2">
+                          <input
+                            type="text"
+                            placeholder="Label (e.g., Type, Engine Speed)"
+                            value={spec.label || ''}
+                            readOnly
+                            className="px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-600"
+                          />
+                          <input
+                            type="text"
+                            placeholder="Value"
+                            value={spec.value || ''}
+                            readOnly
+                            className="px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-600"
+                          />
+                        </div>
+                        <button
+                          onClick={() => removeSpec(index)}
+                          className="px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
+                    ))}
+                    
+                    {/* Add new spec */}
+                    <div className="flex gap-2 items-end">
+                      <div className="flex-1 grid grid-cols-2 gap-2">
+                        <input
+                          type="text"
+                          placeholder="Label (e.g., Type, Engine Speed)"
+                          value={newSpec.label || ''}
+                          onChange={(e) => setNewSpec({ ...newSpec, label: e.target.value })}
+                          className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                        />
+                        <input
+                          type="text"
+                          placeholder="Value"
+                          value={newSpec.value || ''}
+                          onChange={(e) => setNewSpec({ ...newSpec, value: e.target.value })}
+                          className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                        />
+                      </div>
+                      <button
+                        onClick={addSpecField}
+                        className="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors flex items-center gap-1"
+                      >
+                        <Plus className="h-4 w-4" /> Add
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex gap-2 pt-4">
                   <button
                     onClick={() => handleSave(product.id)}
                     className="flex items-center gap-1 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors"
