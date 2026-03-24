@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Edit2, Check, X, Upload, Trash2 } from 'lucide-react';
 import { useFirebaseData } from '@/hooks/useFirebaseData';
 import { Category } from '@/data/products';
@@ -31,6 +31,9 @@ const AdminCategories = () => {
   const [addForm, setAddForm] = useState<Partial<Category>>({ name: '', description: '', image: '' });
   const [addLoading, setAddLoading] = useState(false);
   const [addError, setAddError] = useState<string | null>(null);
+  const addImageInputRef = useRef<HTMLInputElement>(null);
+  const editImageInputRef = useRef<HTMLInputElement>(null);
+
   const handleAddCategory = async (e: React.FormEvent) => {
     e.preventDefault();
     setAddError(null);
@@ -43,6 +46,10 @@ const AdminCategories = () => {
       await addCategory(addForm as Category);
       setAddForm({ name: '', description: '', image: '' });
       setShowAddForm(false);
+      // Reset file input for mobile
+      if (addImageInputRef.current) {
+        addImageInputRef.current.value = '';
+      }
     } catch (error) {
       setAddError('Failed to add category.');
     }
@@ -52,11 +59,22 @@ const AdminCategories = () => {
   const handleAddImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      // Check file size (limit to 500KB to be safe with Base64 encoding)
+      if (file.size > 500 * 1024) {
+        setAddError('Image must be smaller than 500KB. Please compress the image first.');
+        // Reset the input for mobile
+        if (addImageInputRef.current) {
+          addImageInputRef.current.value = '';
+        }
+        return;
+      }
       try {
         const base64 = await convertImageToBase64(file);
         setAddForm({ ...addForm, image: base64 });
+        setAddError(null);
       } catch (error) {
-        setAddError('Error uploading image.');
+        setAddError('Error uploading image. Please try again.');
+        console.error('Image upload error:', error);
       }
     }
   };
@@ -79,16 +97,30 @@ const AdminCategories = () => {
   const handleCancel = () => {
     setEditingId(null);
     setFormData({});
+    // Reset file input for mobile
+    if (editImageInputRef.current) {
+      editImageInputRef.current.value = '';
+    }
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      // Check file size (limit to 500KB to be safe with Base64 encoding)
+      if (file.size > 500 * 1024) {
+        alert('Image must be smaller than 500KB. Please compress the image first.');
+        // Reset the input for mobile
+        if (editImageInputRef.current) {
+          editImageInputRef.current.value = '';
+        }
+        return;
+      }
       try {
         const base64 = await convertImageToBase64(file);
         setFormData({ ...formData, image: base64 });
       } catch (error) {
-        console.error('Error uploading image:', error);
+        alert('Error uploading image. Please try again.');
+        console.error('Image upload error:', error);
       }
     }
   };
@@ -142,6 +174,7 @@ const AdminCategories = () => {
             <div className="flex-1">
               <label className="block text-xs sm:text-sm font-medium mb-1">Category Image</label>
               <input
+                ref={addImageInputRef}
                 className="w-full border rounded px-3 py-2 text-sm"
                 type="file"
                 accept="image/*"
@@ -221,6 +254,7 @@ const AdminCategories = () => {
                           <Upload className="h-4 w-4" />
                           <span className="hidden sm:inline">Upload</span>
                           <input
+                            ref={editImageInputRef}
                             type="file"
                             accept="image/*"
                             onChange={handleImageUpload}

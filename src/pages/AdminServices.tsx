@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Edit2, Check, X, Trash2, Plus, Upload } from 'lucide-react';
 import { useFirebaseData } from '@/hooks/useFirebaseData';
 
@@ -35,6 +35,8 @@ const AdminServices = () => {
   });
   const [addLoading, setAddLoading] = useState(false);
   const [addError, setAddError] = useState<string | null>(null);
+  const addImageInputRef = useRef<HTMLInputElement>(null);
+  const editImageInputRef = useRef<HTMLInputElement>(null);
 
   const handleAddService = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,6 +54,10 @@ const AdminServices = () => {
       console.log('Service added successfully with ID:', result);
       setAddForm({ title: '', desc: '', image: '', icon: 'Printer' });
       setShowAddForm(false);
+      // Reset file input for mobile
+      if (addImageInputRef.current) {
+        addImageInputRef.current.value = '';
+      }
       alert('Service added successfully!');
     } catch (error) {
       console.error('Error adding service:', error);
@@ -66,6 +72,10 @@ const AdminServices = () => {
       // Check file size (limit to 500KB to be safe with Base64 encoding)
       if (file.size > 500 * 1024) {
         setAddError('Image must be smaller than 500KB. Please compress the image first.');
+        // Reset the input for mobile
+        if (addImageInputRef.current) {
+          addImageInputRef.current.value = '';
+        }
         return;
       }
       try {
@@ -73,7 +83,8 @@ const AdminServices = () => {
         setAddForm({ ...addForm, image: base64 });
         setAddError(null);
       } catch (error) {
-        setAddError('Error uploading image.');
+        setAddError('Error uploading image. Please try again.');
+        console.error('Image upload error:', error);
       }
     }
   };
@@ -96,6 +107,10 @@ const AdminServices = () => {
   const handleCancel = () => {
     setEditingId(null);
     setFormData({});
+    // Reset file input for mobile
+    if (editImageInputRef.current) {
+      editImageInputRef.current.value = '';
+    }
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -104,13 +119,18 @@ const AdminServices = () => {
       // Check file size (limit to 500KB to be safe with Base64 encoding)
       if (file.size > 500 * 1024) {
         alert('Image must be smaller than 500KB. Please compress the image first.');
+        // Reset the input for mobile
+        if (editImageInputRef.current) {
+          editImageInputRef.current.value = '';
+        }
         return;
       }
       try {
         const base64 = await convertImageToBase64(file);
         setFormData({ ...formData, image: base64 });
       } catch (error) {
-        console.error('Error uploading image:', error);
+        alert('Error uploading image. Please try again.');
+        console.error('Image upload error:', error);
       }
     }
   };
@@ -199,6 +219,7 @@ const AdminServices = () => {
                   <Upload className="h-4 w-4" />
                   <span className="text-sm">Upload Image</span>
                   <input
+                    ref={addImageInputRef}
                     type="file"
                     onChange={handleAddImageUpload}
                     accept="image/*"
@@ -287,6 +308,7 @@ const AdminServices = () => {
                   <div>
                     <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Image</label>
                     <input
+                      ref={editImageInputRef}
                       type="file"
                       onChange={handleImageUpload}
                       accept="image/*"

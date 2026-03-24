@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Edit2, Check, X, Trash2, Plus, Upload } from 'lucide-react';
 import { useFirebaseData } from '@/hooks/useFirebaseData';
 import { Product, ProductSpec } from '@/data/products';
@@ -19,6 +19,8 @@ const AdminProducts = () => {
   const [showAddForm, setShowAddForm] = useState(false);
   const [formData, setFormData] = useState<Partial<Product>>({});
   const [newSpec, setNewSpec] = useState<Partial<ProductSpec>>({});
+  const addImageInputRef = useRef<HTMLInputElement>(null);
+  const editImageInputRef = useRef<HTMLInputElement>(null);
 
   const handleEdit = (product: Product) => {
     setEditingId(product.id);
@@ -67,6 +69,13 @@ const AdminProducts = () => {
     setShowAddForm(false);
     setFormData({});
     setNewSpec({});
+    // Reset file inputs for mobile
+    if (addImageInputRef.current) {
+      addImageInputRef.current.value = '';
+    }
+    if (editImageInputRef.current) {
+      editImageInputRef.current.value = '';
+    }
   };
 
   const handleDeleteProduct = async (id: string) => {
@@ -95,11 +104,21 @@ const AdminProducts = () => {
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      // Check file size (limit to 500KB to be safe with Base64 encoding)
+      if (file.size > 500 * 1024) {
+        alert('Image must be smaller than 500KB. Please compress the image first.');
+        // Reset the input for mobile
+        if (editImageInputRef.current) {
+          editImageInputRef.current.value = '';
+        }
+        return;
+      }
       try {
         const base64 = await convertImageToBase64(file);
         setFormData({ ...formData, image: base64 });
       } catch (error) {
-        console.error('Error uploading image:', error);
+        alert('Error uploading image. Please try again.');
+        console.error('Image upload error:', error);
       }
     }
   };
@@ -190,6 +209,7 @@ const AdminProducts = () => {
                     <Upload className="h-4 w-4" />
                     <span className="hidden sm:inline">Upload</span>
                     <input
+                      ref={addImageInputRef}
                       type="file"
                       accept="image/*"
                       onChange={handleImageUpload}
@@ -355,6 +375,7 @@ const AdminProducts = () => {
                         <Upload className="h-4 w-4" />
                         <span className="hidden sm:inline">Upload</span>
                         <input
+                          ref={editImageInputRef}
                           type="file"
                           accept="image/*"
                           onChange={handleImageUpload}
