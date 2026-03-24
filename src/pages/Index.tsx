@@ -80,13 +80,13 @@ const Index = () => {
 
   return (
     <div>
-      <section className="relative w-full h-[60vh] sm:h-[70vh] md:h-screen overflow-hidden flex items-center justify-center">
+      <section className="relative w-full h-[25vh] sm:h-[35vh] md:h-screen overflow-hidden flex items-center justify-center">
         <video
           autoPlay
           loop
           muted
           playsInline
-          className="absolute inset-0 h-full w-full object-cover object-right sm:object-center"
+          className="absolute inset-0 h-full w-full object-cover object-center"
         >
           <source src={heroVideo} type="video/mp4" />
         </video>
