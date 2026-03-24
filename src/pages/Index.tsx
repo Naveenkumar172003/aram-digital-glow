@@ -125,51 +125,6 @@ const Index = () => {
         </div>
       </section>
 
-      <section className="py-10 md:py-12 w-full">
-        <div className="px-4 md:px-6">
-          <SectionTitle title="Printing Services" subtitle="Click the card to explore all our services" />
-          <div className="overflow-hidden">
-            <div ref={servicesSectionRef} className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
-              <div className="h-[260px] md:h-[320px]">
-                <ServiceCard
-                  icon={services[0].icon}
-                  title={services[0].title}
-                  description={services[0].desc}
-                  image={services[0].image}
-                  fullImage
-                />
-              </div>
-
-              <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-6">
-                {animatedSixServices.map((service, index) => (
-                  <div
-                    key={`${service.title}-${index}`}
-                    className="h-[130px] md:h-[150px]"
-                    style={{
-                      opacity: servicesExpanded ? 1 : 0,
-                      transform: servicesExpanded
-                        ? "translateX(0) scale(1)"
-                        : "translateX(-260px) scale(0.4)",
-                      transition: `opacity 0.55s ease ${index * 80}ms, transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) ${index * 80}ms`,
-                      pointerEvents: servicesExpanded ? "auto" : "none",
-                    }}
-                  >
-                    <ServiceCard
-                      icon={service.icon}
-                      title={service.title}
-                      description={service.desc}
-                      image={service.image}
-                      compact
-                      fullImage
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       <section className="py-10 md:py-16 bg-gray-50">
         <div className="container">
           <SectionTitle title="Our Branches" subtitle="Visit any of our branches across Tamil Nadu" />
