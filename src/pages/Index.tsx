@@ -86,7 +86,7 @@ const Index = () => {
           loop
           muted
           playsInline
-          className="absolute inset-0 h-full w-full object-cover object-left sm:object-center"
+          className="absolute inset-0 h-full w-full object-cover object-right sm:object-center"
         >
           <source src={heroVideo} type="video/mp4" />
         </video>
