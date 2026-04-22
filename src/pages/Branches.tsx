@@ -24,36 +24,36 @@ const Branches = () => {
         {branches.map((b, i) => (
           <div
             key={b.name}
-            className={styles["glass-card"] + " relative overflow-hidden animate-fade-up flex flex-col md:flex-row w-full h-full md:h-72"}
+            className={styles["glass-card"] + " relative overflow-hidden animate-fade-up w-full h-72 rounded-[1.5rem]"}
             style={{ animationDelay: `${i * 0.1}s` }}
           >
-            <div className="relative w-full md:w-[40%] h-44 md:h-full shrink-0 overflow-hidden rounded-t-[1.5rem] md:rounded-none md:rounded-l-[1.5rem]">
-              <img
-                src={b.image}
-                alt={b.name}
-                className="card-bg w-full h-full object-cover object-center"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
-              <div className="absolute inset-0 flex flex-col items-center justify-center px-3 text-center">
-                <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-accent/95">
+            <img
+              src={b.image}
+              alt={b.name}
+              className="absolute inset-0 w-full h-full object-cover object-center"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+            <div className="card-content absolute inset-0 p-6 flex flex-col justify-between">
+              <div className="flex flex-col items-center justify-center h-full gap-4">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent/95">
                   <MapPin className="h-5 w-5 text-primary" />
                 </div>
-                <div className="text-white text-lg font-semibold drop-shadow">{b.name}</div>
+                <div className="text-white text-2xl font-semibold drop-shadow text-center">{b.name}</div>
               </div>
-            </div>
-            <div className="card-content p-5 flex flex-col justify-center gap-2.5 md:w-[60%] h-full">
-              <div className="branch-details flex items-center gap-2">
-                <MapPin className="h-5 w-5 text-accent" />
-                <span>{b.shortAddress}</span>
-              </div>
-              <div className="branch-details flex items-center gap-2">
-                <Phone className="h-5 w-5 text-accent" />
-                <span>{b.phone}</span>
-              </div>
-              <div className="flex gap-2 mt-3">
-                <Link to={`/branches/${b.slug}`} className={styles["branch-btn"]}>
-                  <span className="branch-btn px-5 py-1.5 font-semibold">View Details</span>
-                </Link>
+              <div className="space-y-2">
+                <div className="branch-details flex items-center gap-2 text-white">
+                  <MapPin className="h-5 w-5 text-accent flex-shrink-0" />
+                  <span className="text-sm">{b.shortAddress}</span>
+                </div>
+                <div className="branch-details flex items-center gap-2 text-white">
+                  <Phone className="h-5 w-5 text-accent flex-shrink-0" />
+                  <span className="text-sm">{b.phone}</span>
+                </div>
+                <div className="flex gap-2 mt-4">
+                  <Link to={`/branches/${b.slug}`} className={styles["branch-btn"]}>
+                    <span className="branch-btn px-5 py-1.5 font-semibold">View Details</span>
+                  </Link>
+                </div>
               </div>
             </div>
           </div>

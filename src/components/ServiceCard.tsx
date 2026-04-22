@@ -12,8 +12,8 @@ interface ServiceCardProps {
 const ServiceCard = ({ icon: Icon, title, description, image, compact = false, fullImage = false }: ServiceCardProps) => {
   if (fullImage && image) {
     return (
-      <div className="card-hover relative h-full rounded-xl border overflow-hidden text-center">
-        <img src={image} alt={title} className="absolute inset-0 h-full w-full object-cover" />
+      <div className="card-hover relative h-full w-full rounded-xl border overflow-hidden text-center">
+        <img src={image} alt={title} className="absolute inset-0 h-full w-full object-cover object-center" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/35 to-transparent" />
         <div className={`absolute inset-x-0 bottom-0 ${compact ? "p-3" : "p-6"}`}>
           <div className={`mx-auto flex items-center justify-center rounded-full bg-accent ${compact ? "mb-2 h-10 w-10" : "mb-4 h-14 w-14"}`}>

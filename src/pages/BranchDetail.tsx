@@ -58,17 +58,15 @@ const BranchDetail = () => {
           <ArrowLeft className="mr-1 h-4 w-4" /> Back to Branches
         </Link>
 
-        <div className="mb-12 rounded-xl border bg-card overflow-hidden card-hover">
-          <div className="relative h-56">
-            <img src={branch.image} alt={branch.name} className="h-full w-full object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/25 to-transparent" />
-          </div>
-          <div className="p-8">
-          <h1 className="text-3xl font-bold mb-4">Aram Xerox – {branch.name}</h1>
-          <div className="flex flex-col sm:flex-row gap-6 text-muted-foreground">
-            <div className="flex items-center gap-2"><MapPin className="h-5 w-5 text-primary" />{branch.address}</div>
-            <div className="flex items-center gap-2"><Phone className="h-5 w-5 text-primary" />{branch.phone}</div>
-          </div>
+        <div className="mb-12 rounded-xl overflow-hidden card-hover relative h-screen max-h-[500px]">
+          <img src={branch.image} alt={branch.name} className="absolute inset-0 w-full h-full object-cover object-center" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent" />
+          <div className="absolute inset-0 p-8 flex flex-col justify-end">
+            <h1 className="text-4xl font-bold mb-4 text-white drop-shadow-lg">Aram Xerox – {branch.name}</h1>
+            <div className="flex flex-col sm:flex-row gap-4 text-white">
+              <div className="flex items-center gap-2"><MapPin className="h-5 w-5 text-accent" />{branch.address}</div>
+              <div className="flex items-center gap-2"><Phone className="h-5 w-5 text-accent" />{branch.phone}</div>
+            </div>
           </div>
         </div>
 
